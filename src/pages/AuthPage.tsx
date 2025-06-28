@@ -1,5 +1,5 @@
 import React, { useState } from "react";
-import { motion } from "framer-motion";
+import { motion, cubicBezier } from "framer-motion";
 import { useToast } from "@/hooks/use-toast";
 import { useNavigate } from "react-router-dom";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
@@ -65,15 +65,49 @@ const AuthPage: React.FC = () => {
           password: formData.password,
           roles: userType,
         });
-        // If the above line doesn't throw an error, signup was successful.
-        //  Show a success message
+        // Responsive, beautiful toast for signup success
+
         toast({
-          title: "Signup Successful!",
-          description: "Please log in with your new credentials.",
-          variant: "success", // A custom variant for green color
+          title: (
+            <span className="flex items-center gap-2 text-green-700 dark:text-green-400">
+              <svg
+                width="22"
+                height="22"
+                fill="none"
+                viewBox="0 0 24 24"
+                className="inline-block"
+              >
+                <circle
+                  cx="12"
+                  cy="12"
+                  r="12"
+                  fill="#22c55e"
+                  className="dark:fill-green-400"
+                />
+                <path
+                  d="M7 13l3 3 7-7"
+                  stroke="#fff"
+                  strokeWidth="2.2"
+                  strokeLinecap="round"
+                  strokeLinejoin="round"
+                />
+              </svg>
+              Signup Successful!
+            </span>
+          ),
+          description: (
+            <span className="block text-gray-700 dark:text-gray-200 text-sm sm:text-base">
+              Please log in with your new credentials.
+            </span>
+          ),
+          className:
+            "border-0 bg-green-50 dark:bg-green-900/80 shadow-xl px-4 py-3 rounded-lg max-w-[90vw] sm:max-w-md w-full animate-pop-up flex flex-col gap-1 text-center sm:text-left",
+          duration: 5000,
         });
 
-        //Clear form fields
+        setIsLogin(true);
+
+        // Clear form fields
         setFormData({
           identifier: "",
           firstName: "",
@@ -114,7 +148,9 @@ const AuthPage: React.FC = () => {
     }
   };
 
-  // Animation variants
+  // Animation variants (fix: use valid 'ease' values for framer-motion)
+  const easeCustom = cubicBezier(0.42, 0, 1, 1);
+
   const containerVariants = {
     hidden: { opacity: 0, y: 20 },
     visible: {
@@ -122,7 +158,7 @@ const AuthPage: React.FC = () => {
       y: 0,
       transition: {
         duration: 0.6,
-        ease: [0.42, 0, 1, 1], // cubic-bezier for easeOut
+        ease: easeCustom,
       },
     },
   };
@@ -134,11 +170,12 @@ const AuthPage: React.FC = () => {
       scale: 1,
       transition: {
         duration: 0.5,
-        ease: "easeOut",
+        ease: cubicBezier(0.42, 0, 1, 1),
       },
     },
   };
 
+  // Not used for now
   const staggerChildren = {
     hidden: { opacity: 0 },
     visible: {
@@ -157,7 +194,7 @@ const AuthPage: React.FC = () => {
       y: 0,
       transition: {
         duration: 0.5,
-        ease: [0.42, 0, 1, 1], // cubic-bezier for easeOut
+        ease: easeCustom,
       },
     },
   };
@@ -226,7 +263,7 @@ const AuthPage: React.FC = () => {
                   handleSubmit={handleSubmit}
                   showPassword={showPassword}
                   setShowPassword={setShowPassword}
-                    authError={authError}
+                  authError={authError}
                   userType={userType}
                   setUserType={setUserType}
                   avatar={avatar}

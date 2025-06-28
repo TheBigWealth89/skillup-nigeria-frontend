@@ -4,10 +4,12 @@ import authService from "@/services/auth";
 import { decodeToken } from "@/utils/authUtils";
 
 interface User {
-  id: string;
   email: string;
   username: string;
-  name: string;
+  name: {
+    firstName: string;
+    lastName: string;
+  };
   role: "learner" | "instructor" | "admin";
   avatar?: string;
 }

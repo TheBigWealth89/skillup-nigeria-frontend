@@ -4,6 +4,7 @@ import { TooltipProvider } from "@/components/ui/tooltip";
 import { QueryClient, QueryClientProvider } from "@tanstack/react-query";
 import { BrowserRouter, Routes, Route } from "react-router-dom";
 import MainLayout from "./layouts/MainLayout";
+import { ThemeProvider } from "./context/ThemeContext";
 import Home from "./pages/Home";
 import AuthPage from "./pages/AuthPage";
 import AdminDashboard from "./pages/AdminDashboard";
@@ -19,54 +20,58 @@ import { USER_ROLES } from "./constants";
 const queryClient = new QueryClient();
 
 const App = () => (
-  <QueryClientProvider client={queryClient}>
-    <TooltipProvider>
-      <Toaster />
-      <Sonner />
-      <BrowserRouter>
-        <Routes>
-          <Route path="/" element={<MainLayout />}>
-            <Route index element={<Home />} />
-            <Route path="/auth" element={<AuthPage />} />
+  <ThemeProvider>
+    <QueryClientProvider client={queryClient}>
+      <TooltipProvider>
+        <Toaster />
+        <Sonner />
+        <BrowserRouter>
+          <Routes>
+            <Route path="/" element={<MainLayout />}>
+              <Route index element={<Home />} />
+              <Route path="/auth" element={<AuthPage />} />
 
-            <Route element={<PrivateRoute />}>
-              {/* <Route path={ROUTES.DASHBOARD} element={<DashboardRouter />} /> */}
-              <Route
-                element={<RoleBasedRoute allowedRoles={[USER_ROLES.ADMIN]} />}
-              >
+              <Route element={<PrivateRoute />}>
+                {/* <Route path={ROUTES.DASHBOARD} element={<DashboardRouter />} /> */}
                 <Route
-                  path={ROUTES.ADMIN_DASHBOARD}
-                  element={<AdminDashboard />}
-                />
+                  element={<RoleBasedRoute allowedRoles={[USER_ROLES.ADMIN]} />}
+                >
+                  <Route
+                    path={ROUTES.ADMIN_DASHBOARD}
+                    element={<AdminDashboard />}
+                  />
+                </Route>
+
+                <Route
+                  element={
+                    <RoleBasedRoute allowedRoles={[USER_ROLES.INSTRUCTOR]} />
+                  }
+                >
+                  <Route
+                    path={ROUTES.INSTRUCTOR_DASHBOARD}
+                    element={<InstructorDashboard />}
+                  />
+                </Route>
+
+                <Route
+                  element={
+                    <RoleBasedRoute allowedRoles={[USER_ROLES.LEARNER]} />
+                  }
+                >
+                  <Route
+                    path={ROUTES.LEARNER_DASHBOARD}
+                    element={<LearnerDashboard />}
+                  />
+                </Route>
               </Route>
 
-              <Route
-                element={
-                  <RoleBasedRoute allowedRoles={[USER_ROLES.INSTRUCTOR]} />
-                }
-              >
-                <Route
-                  path={ROUTES.INSTRUCTOR_DASHBOARD}
-                  element={<InstructorDashboard />}
-                />
-              </Route>
-
-              <Route
-                element={<RoleBasedRoute allowedRoles={[USER_ROLES.LEARNER]} />}
-              >
-                <Route
-                  path={ROUTES.LEARNER_DASHBOARD}
-                  element={<LearnerDashboard />}
-                />
-              </Route>
+              <Route path="*" element={<NotFound />} />
             </Route>
-
-            <Route path="*" element={<NotFound />} />
-          </Route>
-        </Routes>
-      </BrowserRouter>
-    </TooltipProvider>
-  </QueryClientProvider>
+          </Routes>
+        </BrowserRouter>
+      </TooltipProvider>
+    </QueryClientProvider>
+  </ThemeProvider>
 );
 
 export default App;
