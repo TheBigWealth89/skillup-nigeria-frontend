@@ -68,7 +68,7 @@ const AdminDashboard: React.FC = () => {
                   Admin Panel
                 </h1>
                 <p className="text-sm text-gray-600 dark:text-white">
-                  Welcome, {user?.name}
+                  Welcome, {user.name.firstName}
                 </p>
               </div>
             </div>
