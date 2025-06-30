@@ -2,6 +2,7 @@ import { create } from "zustand";
 import { persist } from "zustand/middleware";
 import authService from "@/services/auth";
 import { decodeToken } from "@/utils/authUtils";
+import auth from "@/services/auth";
 
 interface User {
   email: string;
@@ -33,6 +34,7 @@ interface AuthState {
   login: (identifier: string, password: string) => Promise<any>;
   signUp: (data: signupData) => Promise<any>;
   logout: () => void;
+  setAccessToken: (token: string) => void;
   updateUser: (userData: Partial<User>) => void;
   clearError: () => void;
 }
@@ -109,10 +111,20 @@ export const useAuthStore = create<AuthState>()(
         }
       },
 
-      logout: () => {
-        set({ user: null, error: null, isLoading: false });
+      logout: async () => {
+        try {
+          await authService.logout();
+          set({ user: null, error: null, isLoading: false });
+        } catch (err: any) {
+          console.error("Logout failed on the server:", err);
+          set({
+            error: "Logout failed. Please try again.",
+          });
+        }
       },
-
+      setAccessToken: (token: string) => {
+        set({ accessToken: token });
+      },
       updateUser: (userData) =>
         set((state) => ({
           user: state.user ? { ...state.user, ...userData } : null,

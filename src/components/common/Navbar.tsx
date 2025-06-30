@@ -14,7 +14,6 @@ const Navbar: React.FC = () => {
   const { theme, toggleTheme } = useTheme();
   const { user, logout } = useAuthStore();
   const navigate = useNavigate();
-  console.log(user);
   const handleLogout = () => {
     logout();
     navigate(ROUTES.HOME);
