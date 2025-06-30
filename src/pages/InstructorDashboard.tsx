@@ -13,6 +13,7 @@ import {
   Award,
   Clock,
 } from "lucide-react";
+import CourseFormModal from "@/components/course-form/CourseFormModal";
 
 const InstructorDashboard: React.FC = () => {
   const stats = [
@@ -112,6 +113,9 @@ const InstructorDashboard: React.FC = () => {
     },
   };
 
+  // Modal state for Create Course
+  const [showCreateModal, setShowCreateModal] = React.useState(false);
+
   return (
     <div className="min-h-screen bg-background text-foreground dark:text-white p-6 transition-colors duration-300">
       <motion.div
@@ -183,7 +187,9 @@ const InstructorDashboard: React.FC = () => {
                     whileHover={{ scale: 1.05 }}
                     whileTap={{ scale: 0.95 }}
                   >
-                    <Button size="sm">Create New</Button>
+                    <Button size="sm" onClick={() => setShowCreateModal(true)}>
+                      Create New
+                    </Button>
                   </motion.div>
                 </div>
               </CardHeader>
@@ -300,6 +306,12 @@ const InstructorDashboard: React.FC = () => {
           </motion.div>
         </div>
       </motion.div>
+
+      {/* Create Course Modal/Drawer (Step Form Skeleton) */}
+      <CourseFormModal
+        open={showCreateModal}
+        onClose={() => setShowCreateModal(false)}
+      />
     </div>
   );
 };
