@@ -1,14 +1,13 @@
 // components/course-form/Step4ReviewSubmit.tsx
 
 import React from "react";
-import { CourseForm } from  "@/types/course";
+import { CourseForm } from "@/types/course";
 
 interface Props {
   form: CourseForm;
-  onSubmit: () => void;
 }
 
-const Step4ReviewSubmit: React.FC<Props> = ({ form, onSubmit }) => {
+const Step4ReviewSubmit: React.FC<Props> = ({ form }) => {
   return (
     <div className="space-y-4 text-sm">
       <div>
@@ -33,7 +32,11 @@ const Step4ReviewSubmit: React.FC<Props> = ({ form, onSubmit }) => {
       <div>
         <h3 className="font-semibold mb-1">Cover Image</h3>
         {form.coverImage && (
-          <img src={form.coverImage} alt="Cover" className="rounded shadow w-full max-w-sm" />
+          <img
+            src={form.coverImage}
+            alt="Cover"
+            className="rounded shadow w-full max-w-sm"
+          />
         )}
       </div>
       <div>
@@ -52,12 +55,7 @@ const Step4ReviewSubmit: React.FC<Props> = ({ form, onSubmit }) => {
         >
           Save Draft
         </button>
-        <button
-          className="px-4 py-2 bg-blue-600 text-white rounded hover:bg-blue-700"
-          onClick={onSubmit}
-        >
-          Submit for Approval
-        </button>
+        
       </div>
     </div>
   );

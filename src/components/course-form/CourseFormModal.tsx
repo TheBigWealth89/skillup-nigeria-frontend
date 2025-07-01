@@ -7,7 +7,8 @@ import Step3MediaSettings from "./Step3MediaSettings";
 import Step4ReviewSubmit from "./Step4ReviewSubmit";
 import { Button } from "@/components/ui/button";
 import { CourseForm } from "@/types/course";
-import { validateStep1, validateStep3 } from "./courseValidate"; 
+import { validateStep1, validateStep3 } from "./courseValidate";
+import { useToast } from "@/hooks/use-toast";
 
 const defaultForm: CourseForm = {
   title: "",
@@ -32,6 +33,8 @@ const CourseFormModal = ({
   const [step, setStep] = useState(1);
   const [form, setForm] = useState<CourseForm>(defaultForm);
   const [errors, setErrors] = useState({});
+  const [isSubmitting, setIsSubmitting] = useState(false);
+  const { toast } = useToast();
 
   const validate = () => {
     if (step === 1) {
@@ -59,6 +62,30 @@ const CourseFormModal = ({
     setStep((s) => Math.max(s - 1, 1));
   };
 
+  const handleSubmit = async () => {
+    if (!validate()) return;
+
+    setIsSubmitting(true);
+    try {
+      // Simulate API call
+      await new Promise((resolve) => setTimeout(resolve, 1000));
+
+      toast({
+        title: "Course submitted",
+        description: "✅ Course submitted for admin approval!",
+      });
+      onClose();
+    } catch (error) {
+      toast({
+        title: "Error",
+        description: "❌ Failed to submit course",
+        variant: "destructive",
+      });
+    } finally {
+      setIsSubmitting(false);
+    }
+  };
+
   if (!open) return null;
 
   return (
@@ -84,7 +111,7 @@ const CourseFormModal = ({
         </div>
 
         {/* Step Content */}
-        <div className="min-h-[300px]">
+        <div className="min-h-[280px]">
           {step === 1 && (
             <Step1CourseDetails
               form={form}
@@ -93,9 +120,7 @@ const CourseFormModal = ({
               setErrors={setErrors}
             />
           )}
-          {step === 2 && (
-            <Step2SyllabusBuilder form={form} setForm={setForm} />
-          )}
+          {step === 2 && <Step2SyllabusBuilder form={form} setForm={setForm} />}
           {step === 3 && (
             <Step3MediaSettings
               form={form}
@@ -104,15 +129,7 @@ const CourseFormModal = ({
               setErrors={setErrors}
             />
           )}
-          {step === 4 && (
-            <Step4ReviewSubmit
-              form={form}
-              onSubmit={() => {
-                alert("✅ Course submitted for admin approval!");
-                onClose();
-              }}
-            />
-          )}
+          {step === 4 && <Step4ReviewSubmit form={form} />}
         </div>
 
         {/* Navigation */}
@@ -120,9 +137,19 @@ const CourseFormModal = ({
           <Button variant="outline" disabled={step === 1} onClick={handleBack}>
             Back
           </Button>
-          <Button onClick={handleNext} disabled={step === 4}>
-            {step === 3 ? "Review" : "Next"}
-          </Button>
+          {step < 4 ? (
+            <Button onClick={handleNext}>
+              {step === 3 ? "Review" : "Next"}
+            </Button>
+          ) : (
+            <Button
+              className="px-4 py-2 bg-blue-600 text-white rounded hover:bg-blue-700"
+              onClick={handleSubmit}
+              disabled={isSubmitting}
+            >
+              Submit for Approval
+            </Button>
+          )}
         </div>
       </div>
     </div>
