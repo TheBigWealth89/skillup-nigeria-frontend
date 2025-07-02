@@ -1,74 +1,74 @@
-
-import React, { useState } from 'react';
-import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card';
-import { Button } from '@/components/ui/button';
-import { Badge } from '@/components/ui/badge';
-import { Input } from '@/components/ui/input';
-import { Table, TableBody, TableCell, TableHead, TableHeader, TableRow } from '@/components/ui/table';
-import { Dialog, DialogContent, DialogHeader, DialogTitle, DialogTrigger } from '@/components/ui/dialog';
-import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from '@/components/ui/select';
-import { Eye, Mail, UserX, Download, Search } from 'lucide-react';
-import { useToast } from '@/hooks/use-toast';
+import React, { useState, useEffect } from "react";
+import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
+import { Button } from "@/components/ui/button";
+import { Badge } from "@/components/ui/badge";
+import { Input } from "@/components/ui/input";
+import {
+  Table,
+  TableBody,
+  TableCell,
+  TableHead,
+  TableHeader,
+  TableRow,
+} from "@/components/ui/table";
+import {
+  Dialog,
+  DialogContent,
+  DialogHeader,
+  DialogTitle,
+  DialogTrigger,
+} from "@/components/ui/dialog";
+import {
+  Select,
+  SelectContent,
+  SelectItem,
+  SelectTrigger,
+  SelectValue,
+} from "@/components/ui/select";
+import { Eye, Mail, UserX, Download, Search } from "lucide-react";
+import { useToast } from "@/hooks/use-toast";
+import adminService from "@/services/adminService";
 
 const UserManagement: React.FC = () => {
   const { toast } = useToast();
-  const [searchTerm, setSearchTerm] = useState('');
-  const [roleFilter, setRoleFilter] = useState('all');
-  const [statusFilter, setStatusFilter] = useState('all');
+  const [searchTerm, setSearchTerm] = useState("");
+  const [roleFilter, setRoleFilter] = useState("all");
+  const [statusFilter, setStatusFilter] = useState("all");
+  const [users, setUsers] = useState([]);
+  const [loading, setLoading] = useState(true);
+  const [error, setError] = useState(null);
 
-  const users = [
-    {
-      id: 1,
-      name: "John Doe",
-      email: "john.doe@email.com",
-      role: "learner",
-      joinDate: "2024-01-15",
-      status: "active",
-      avatar: "/placeholder.svg",
-      coursesEnrolled: 5,
-      lastActive: "2 hours ago"
-    },
-    {
-      id: 2,
-      name: "Sarah Wilson",
-      email: "sarah.wilson@email.com",
-      role: "instructor",
-      joinDate: "2024-01-10",
-      status: "active",
-      avatar: "/placeholder.svg",
-      coursesCreated: 3,
-      lastActive: "1 day ago"
-    },
-    {
-      id: 3,
-      name: "Mike Johnson",
-      email: "mike.johnson@email.com",
-      role: "learner",
-      joinDate: "2024-01-08",
-      status: "suspended",
-      avatar: "/placeholder.svg",
-      coursesEnrolled: 2,
-      lastActive: "1 week ago"
-    },
-    {
-      id: 4,
-      name: "Emily Chen",
-      email: "emily.chen@email.com",
-      role: "instructor",
-      joinDate: "2024-01-05",
-      status: "active",
-      avatar: "/placeholder.svg",
-      coursesCreated: 7,
-      lastActive: "3 hours ago"
-    }
-  ];
+  useEffect(() => {
+    const fetchUsers = async () => {
+      try {
+        const response = await adminService.getAllUsers();
+        console.log(response);
+        if (Array.isArray(response.data)) {
+          setUsers(response.data);
+        } else {
+          throw new Error("Invalid data format received from server");
+        }
+        setLoading(false);
+      } catch (err) {
+        setError(err.message || "Failed to fetch users");
+        setLoading(false);
+      }
+    };
 
-  const filteredUsers = users.filter(user => {
-    const matchesSearch = user.name.toLowerCase().includes(searchTerm.toLowerCase()) ||
-                         user.email.toLowerCase().includes(searchTerm.toLowerCase());
-    const matchesRole = roleFilter === 'all' || user.role === roleFilter;
-    const matchesStatus = statusFilter === 'all' || user.status === statusFilter;
-    
+    fetchUsers();
+  }, []);
+
+  if (loading) return <div>Loading...</div>;
+  if (error) return <div>Error: {error}</div>;
+
+  const filteredUsers = users.filter((user) => {
+    const matchesSearch =
+      user.name.toLowerCase().includes(searchTerm.toLowerCase()) ||
+      user.email.toLowerCase().includes(searchTerm.toLowerCase());
+    const matchesRole = roleFilter === "all" || user.role === roleFilter;
+    const matchesStatus =
+      statusFilter === "all" || user.status === statusFilter;
+
     return matchesSearch && matchesRole && matchesStatus;
   });
 
@@ -79,12 +79,36 @@ const UserManagement: React.FC = () => {
     });
   };
 
-  const handleSuspendUser = (userId: number) => {
-    toast({
-      title: "User Suspended",
-      description: "The user account has been suspended.",
-      variant: "destructive",
-    });
+  const handleSuspendUser = async (targetedUserId: string) => {
+    try {
+      const response = await adminService.suspendUser(targetedUserId);
+
+      // Update local state
+      setUsers(
+        users.map((user) =>
+          user.id === targetedUserId
+            ? {
+                ...user,
+                status: response.newStatus,
+                isActive: response.newStatus === "active",
+              }
+            : user
+        )
+      );
+
+      toast({
+        title: response.message,
+        description: `User has been ${response.newStatus}`,
+        variant: response.newStatus === "active" ? "default" : "destructive",
+      });
+    } catch (err) {
+      toast({
+        title: "Error",
+        description:
+          err instanceof Error ? err.message : "Failed to update user status",
+        variant: "destructive",
+      });
+    }
   };
 
   const handleExportUsers = () => {
@@ -114,7 +138,7 @@ const UserManagement: React.FC = () => {
                 />
               </div>
             </div>
-            
+
             <Select value={roleFilter} onValueChange={setRoleFilter}>
               <SelectTrigger className="w-[180px]">
                 <SelectValue placeholder="Filter by role" />
@@ -168,19 +192,29 @@ const UserManagement: React.FC = () => {
                       />
                       <div>
                         <h4 className="font-semibold">{user.name}</h4>
-                        <p className="text-sm text-gray-500">Last active: {user.lastActive}</p>
+                        <p className="text-sm text-gray-500">
+                          Last active: {user.lastActive}
+                        </p>
                       </div>
                     </div>
                   </TableCell>
                   <TableCell>{user.email}</TableCell>
                   <TableCell>
-                    <Badge variant={user.role === 'instructor' ? 'default' : 'secondary'}>
+                    <Badge
+                      variant={
+                        user.role === "instructor" ? "default" : "secondary"
+                      }
+                    >
                       {user.role}
                     </Badge>
                   </TableCell>
                   <TableCell>{user.joinDate}</TableCell>
                   <TableCell>
-                    <Badge variant={user.status === 'active' ? 'default' : 'destructive'}>
+                    <Badge
+                      variant={
+                        user.status === "active" ? "default" : "destructive"
+                      }
+                    >
                       {user.status}
                     </Badge>
                   </TableCell>
@@ -204,7 +238,9 @@ const UserManagement: React.FC = () => {
                                 className="w-16 h-16 rounded-full object-cover"
                               />
                               <div>
-                                <h3 className="font-semibold text-lg">{user.name}</h3>
+                                <h3 className="font-semibold text-lg">
+                                  {user.name}
+                                </h3>
                                 <p className="text-gray-600">{user.email}</p>
                                 <Badge>{user.role}</Badge>
                               </div>
@@ -216,20 +252,34 @@ const UserManagement: React.FC = () => {
                               </div>
                               <div>
                                 <p className="text-sm font-medium">Status</p>
-                                <Badge variant={user.status === 'active' ? 'default' : 'destructive'}>
+                                <Badge
+                                  variant={
+                                    user.status === "active"
+                                      ? "default"
+                                      : "destructive"
+                                  }
+                                >
                                   {user.status}
                                 </Badge>
                               </div>
-                              {user.role === 'learner' && (
+                              {user.role === "learner" && (
                                 <div>
-                                  <p className="text-sm font-medium">Courses Enrolled</p>
-                                  <p className="text-gray-600">{user.coursesEnrolled}</p>
+                                  <p className="text-sm font-medium">
+                                    Courses Enrolled
+                                  </p>
+                                  <p className="text-gray-600">
+                                    {user.coursesEnrolled}
+                                  </p>
                                 </div>
                               )}
-                              {user.role === 'instructor' && (
+                              {user.role === "instructor" && (
                                 <div>
-                                  <p className="text-sm font-medium">Courses Created</p>
-                                  <p className="text-gray-600">{user.coursesCreated}</p>
+                                  <p className="text-sm font-medium">
+                                    Courses Created
+                                  </p>
+                                  <p className="text-gray-600">
+                                    {user.coursesCreated}
+                                  </p>
                                 </div>
                               )}
                             </div>
@@ -246,7 +296,7 @@ const UserManagement: React.FC = () => {
                         <Mail className="h-4 w-4" />
                       </Button>
 
-                      {user.status === 'active' && (
+                      {user.status === "active" && (
                         <Button
                           variant="outline"
                           size="sm"

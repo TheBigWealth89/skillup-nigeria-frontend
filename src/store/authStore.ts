@@ -2,18 +2,7 @@ import { create } from "zustand";
 import { persist } from "zustand/middleware";
 import authService from "@/services/auth";
 import { decodeToken } from "@/utils/authUtils";
-import auth from "@/services/auth";
-
-interface User {
-  email: string;
-  username: string;
-  name: {
-    firstName: string;
-    lastName: string;
-  };
-  role: "learner" | "instructor" | "admin";
-  avatar?: string;
-}
+import { User } from "@/types/user";
 
 interface signupData {
   firstName: string;

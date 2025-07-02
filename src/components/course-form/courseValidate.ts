@@ -42,8 +42,8 @@ export const validateStep3 = (form: CourseForm): CourseFormErrors => {
     errors.introVideo = "Invalid YouTube URL.";
   }
 
-  if (form.duration <= 0) {
-    errors.duration = "Duration must be greater than 0.";
+  if (form.estimatedDuration <= 0) {
+    errors.estimatedDuration = "Duration must be greater than 0.";
   }
 
   return errors;

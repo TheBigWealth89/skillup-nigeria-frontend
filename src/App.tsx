@@ -16,6 +16,8 @@ import { ROUTES } from "./constants";
 import PrivateRoute from "./auth/PrivateRoute";
 import RoleBasedRoute from "./auth/RoleBasedRoute";
 import { USER_ROLES } from "./constants";
+import { CourseDetailPage } from "./pages/CourseDetailPage";
+import { CourseLearningPage } from "./pages/courseLearningPage";
 
 const queryClient = new QueryClient();
 
@@ -28,6 +30,15 @@ const App = () => (
         <BrowserRouter>
           <Routes>
             <Route path="/" element={<MainLayout />}>
+              <Route path="/course/:courseId" element={<CourseDetailPage />} />
+              <Route
+                path="/course/:courseId/learn"
+                element={<CourseLearningPage />}
+              />
+              <Route
+                path="/course/:courseId/learn/:moduleIndex/:lessonIndex"
+                element={<CourseLearningPage />}
+              />
               <Route index element={<Home />} />
               <Route path="/auth" element={<AuthPage />} />
 

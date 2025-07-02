@@ -1,5 +1,3 @@
-// components/course-form/CourseFormModal.tsx
-
 import React, { useState } from "react";
 import Step1CourseDetails from "./Step1CourseDetails";
 import Step2SyllabusBuilder from "./Step2SyllabusBuilder";
@@ -9,18 +7,19 @@ import { Button } from "@/components/ui/button";
 import { CourseForm } from "@/types/course";
 import { validateStep1, validateStep3 } from "./courseValidate";
 import { useToast } from "@/hooks/use-toast";
+import courseService from "@/services/courseService";
 
 const defaultForm: CourseForm = {
   title: "",
-  category: "",
+  category: "programming", // default to a valid category
   description: "",
   tags: [],
   syllabus: [],
   prerequisites: [],
   coverImage: "",
   introVideo: "",
-  difficulty: "Beginner",
-  duration: 1,
+  level: "beginner", // use correct property and value
+  estimatedDuration: 1, // use correct property name
 };
 
 const CourseFormModal = ({
@@ -67,9 +66,10 @@ const CourseFormModal = ({
 
     setIsSubmitting(true);
     try {
-      // Simulate API call
       await new Promise((resolve) => setTimeout(resolve, 1000));
-
+      await courseService.create(
+        form as Omit<import("@/types/course").Course, "_id" | "createdBy">
+      );
       toast({
         title: "Course submitted",
         description: "✅ Course submitted for admin approval!",

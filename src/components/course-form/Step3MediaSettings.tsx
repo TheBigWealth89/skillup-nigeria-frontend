@@ -105,7 +105,7 @@ const Step3MediaSettings: React.FC<Props> = ({ form, setForm, errors }) => {
                 type="radio"
                 name="difficulty"
                 value={level.value}
-                checked={form.difficulty === level.value}
+                checked={form.level === level.value}
                 onChange={handleChange}
               />
               {level.label}
@@ -122,14 +122,14 @@ const Step3MediaSettings: React.FC<Props> = ({ form, setForm, errors }) => {
         <input
           type="number"
           name="duration"
-          value={form.duration}
+          value={form.estimatedDuration}
           min={0}
           step={0.5}
           onChange={handleChange}
           className="w-full p-2 rounded border dark:bg-gray-800"
         />
-        {errors.duration && (
-          <p className="text-xs text-red-500 mt-1">{errors.duration}</p>
+        {errors.estimatedDuration && (
+          <p className="text-xs text-red-500 mt-1">{errors.estimatedDuration}</p>
         )}
       </div>
     </div>

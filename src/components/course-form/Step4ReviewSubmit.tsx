@@ -1,4 +1,3 @@
-// components/course-form/Step4ReviewSubmit.tsx
 
 import React from "react";
 import { CourseForm } from "@/types/course";
@@ -41,11 +40,11 @@ const Step4ReviewSubmit: React.FC<Props> = ({ form }) => {
       </div>
       <div>
         <h3 className="font-semibold mb-1">Duration</h3>
-        <p>{form.duration} hour(s)</p>
+        <p>{form.estimatedDuration} hour(s)</p>
       </div>
       <div>
         <h3 className="font-semibold mb-1">Level</h3>
-        <p>{form.difficulty}</p>
+        <p>{form.level}</p>
       </div>
 
       <div className="flex gap-4 mt-4">
