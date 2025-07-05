@@ -4,6 +4,7 @@ import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
 import { Eye, EyeOff } from "lucide-react";
+import {Link} from "react-router-dom";
 
 interface LoginFormProps {
   formData: any;
@@ -14,6 +15,7 @@ interface LoginFormProps {
   passwordStrength: number;
   isLoading: boolean;
   authError: string | null;
+  setResetPassword?: (value: boolean) => void;
 }
 
 const LoginForm: React.FC<LoginFormProps> = ({
@@ -89,7 +91,8 @@ const LoginForm: React.FC<LoginFormProps> = ({
           className="text-sm text-blue-600 hover:text-blue-700 font-medium"
           whileHover={{ scale: 1.05 }}
         >
-          Forgot Password?
+            <Link to="/reset-password">Forgot Password?</Link>
+           
         </motion.button>
       </motion.div>
       <motion.div whileHover={{ scale: 1.02 }} whileTap={{ scale: 0.98 }}>

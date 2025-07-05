@@ -2,10 +2,10 @@ import React, { useState } from "react";
 import { useTheme } from "@/context/ThemeContext";
 import { Link, useNavigate } from "react-router-dom";
 import { motion } from "framer-motion";
-import { useAuthStore, useIsAuthenticated } from "@/store/authStore";
+import { useAuthStore } from "@/store/authStore";
 import { Button } from "@/components/ui/button";
 import { ROUTES } from "@/constants";
-import { Bell } from "lucide-react";
+import { Bell, GraduationCap } from "lucide-react";
 
 const Navbar: React.FC = () => {
   const [isMenuOpen, setIsMenuOpen] = useState<false | "search" | "avatar">(
@@ -23,17 +23,16 @@ const Navbar: React.FC = () => {
     <nav className="bg-background text-foreground shadow-md border-b border-border sticky top-0 z-50 transition-colors duration-300">
       <div className="max-w-full mx-auto px-4 sm:px-6 lg:px-8">
         <div className="flex justify-between items-center h-16 w-full">
-          {/* Logo */}
-          <div className="flex items-center flex-shrink-0">
-            <Link to={ROUTES.HOME} className="flex items-center space-x-2">
-              <motion.div
-                className="text-2xl font-bold tracking-tight text-blue-600 dark:text-blue-300 transition-colors"
-                whileHover={{ scale: 1.05 }}
-              >
-                SkillUp Nigeria
-              </motion.div>
-            </Link>
-          </div>
+          <div className="flex items-center space-x-3">
+                        <div className="w-8 h-8 bg-primary rounded-lg flex items-center justify-center">
+                          <GraduationCap className="h-5 w-5 text-primary-foreground" />
+                        </div>
+                        <div>
+                          <h1 className="text-lg font-bold text-foreground">
+                            SkillUp Nigeria
+                          </h1>
+                        </div>
+                      </div>
 
           {/* Search Bar (centered, hidden on mobile) */}
           <div className="hidden md:flex flex-1 justify-center px-4">
