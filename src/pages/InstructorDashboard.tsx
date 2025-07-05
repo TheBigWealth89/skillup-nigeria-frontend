@@ -19,25 +19,25 @@ const InstructorDashboard: React.FC = () => {
   const stats = [
     {
       title: "My Courses",
-      value: "12",
+      value: "3",
       icon: BookOpen,
       color: "text-blue-600",
     },
     {
       title: "Total Students",
-      value: "1,248",
+      value: "100",
       icon: Users,
       color: "text-green-600",
     },
     {
       title: "Monthly Revenue",
-      value: "₦450K",
+      value: "₦200K",
       icon: DollarSign,
       color: "text-purple-600",
     },
     {
       title: "Course Rating",
-      value: "4.8",
+      value: "2.8",
       icon: Award,
       color: "text-orange-600",
     },
