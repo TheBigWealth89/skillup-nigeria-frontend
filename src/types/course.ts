@@ -34,29 +34,40 @@ export interface Module {
 
 // --- Main Course Interface (Matches the API response) ---
 export interface Course {
-  learnersEnrolled: any;
+  learnersEnrolled: number;
   status: string;
   id: string;
   title: string;
   category: "programming" | "design" | "business" | "language";
   description: string;
   createdBy: {
-    // Assuming it will be populated
     id: string;
     name: string;
+    avatar?: string;
+    title?: string;
+    bio?: string;
   };
-  modules: Module[]; // The new structured syllabus
+  modules: Module[];
   coverImage?: string;
   introVideo?: string;
   isApproved: boolean;
   level: "beginner" | "intermediate" | "advanced";
-  estimatedDuration?: number; // in hours
+  estimatedDuration?: number;
   prerequisites: string[];
   tags: string[];
-  totalLessons: number; // From the new virtual property
+  totalLessons: number;
   enrollmentCount?: number;
   createdAt: string;
   updatedAt: string;
+  // Add fields for UI mock data compatibility
+  rating?: number;
+  reviewCount?: number;
+  duration?: string | number;
+  syllabus?: Array<{
+    module: string;
+    lessons: string[];
+  }>;
+  objectives?: string[];
 }
 
 // --- Form Data Interface ---

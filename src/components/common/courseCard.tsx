@@ -146,8 +146,10 @@ export function CourseCard({ course, onViewDetails }: CourseCardProps) {
         </Button>
         <Button
           className="flex-1"
-          onClick={handleEnroll}
-          disabled={isEnrolling || isEnrolled}
+          onClick={
+            isEnrolled ? () => navigate("/course/course2/learn") : handleEnroll
+          }
+          disabled={isEnrolling || (isEnrolled && false)}
         >
           {isEnrolling ? (
             <div className="flex items-center space-x-2">
@@ -155,10 +157,7 @@ export function CourseCard({ course, onViewDetails }: CourseCardProps) {
               <span>Enrolling...</span>
             </div>
           ) : isEnrolled ? (
-            <div
-              onClick={() => navigate(`/course/${course.id}/learn`)}
-              className="flex items-center space-x-2"
-            >
+            <div className="flex items-center space-x-2">
               <Play className="h-4 w-4" />
               <span>Continue</span>
             </div>

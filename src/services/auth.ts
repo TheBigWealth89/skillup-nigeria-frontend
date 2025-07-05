@@ -1,4 +1,11 @@
+import axios from "axios";
 import apiClient from "./api";
+const API_URL = "http://localhost:5000/api";
+
+const apiAuth = axios.create({
+  baseURL: API_URL,
+  withCredentials: true, // Allows cookies (for refresh token) to be sent
+});
 
 class authService {
   async signup(
@@ -11,7 +18,7 @@ class authService {
     roles: string[]
   ) {
     try {
-      const response = await apiClient.post("/auth/signup", {
+      const response = await apiAuth.post("/auth/signup", {
         firstName,
         lastName,
         username,
@@ -28,7 +35,7 @@ class authService {
 
   async login(identifier: string, password: string) {
     try {
-      const response = await apiClient.post("/auth/login", {
+      const response = await apiAuth.post("/auth/login", {
         identifier,
         password,
       });
@@ -45,9 +52,25 @@ class authService {
     }
   }
 
-  async resetPassword(email: string) {
+  async sendToken(email: string) {
     try {
-      const response = await apiClient.post("/auth/forgot-password", { email });
+      const response = await apiAuth.post("/auth/forgot-password", { email });
+      return response.data;
+    } catch (error) {
+      throw error;
+    }
+  }
+
+  async resetPassword(
+    token: string,
+    password: string,
+    passwordConfirm: string
+  ) {
+    try {
+      const response = await apiAuth.post(`/auth/reset-password/${token}`, {
+        password,
+        passwordConfirm,
+      });
       return response.data;
     } catch (error) {
       throw error;

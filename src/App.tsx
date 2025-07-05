@@ -7,7 +7,8 @@ import MainLayout from "./layouts/MainLayout";
 import { ThemeProvider } from "./context/ThemeContext";
 import Home from "./pages/Home";
 import AuthPage from "./pages/AuthPage";
-import ResetPassword from "./pages/ResetPassword";
+import SendToken from "./pages/SendToken";
+import ResetPasswordPage from "./pages/ResetPassword";
 import AdminDashboard from "./pages/AdminDashboard";
 import InstructorDashboard from "./pages/InstructorDashboard";
 import LearnerDashboard from "./pages/LearnerDashboard";
@@ -18,7 +19,7 @@ import PrivateRoute from "./auth/PrivateRoute";
 import RoleBasedRoute from "./auth/RoleBasedRoute";
 import { USER_ROLES } from "./constants";
 import { CourseDetailPage } from "./pages/CourseDetailPage";
-import { CourseLearningPage } from "./pages/courseLearningPage";
+import { CourseLearningPage } from "./pages/CourseLearningPage";
 
 const queryClient = new QueryClient();
 
@@ -42,7 +43,11 @@ const App = () => (
               />
               <Route index element={<Home />} />
               <Route path="/auth" element={<AuthPage />} />
-              <Route path="/reset-password" element={<ResetPassword />} />
+              <Route path="/reset-password" element={<SendToken />} />
+              <Route
+                path="/reset-password/:token"
+                element={<ResetPasswordPage />}
+              />
               <Route element={<PrivateRoute />}>
                 <Route path={ROUTES.DASHBOARD} element={<DashboardRouter />} />
                 <Route
