@@ -44,7 +44,7 @@ const App = () => (
               <Route path="/auth" element={<AuthPage />} />
               <Route path="/reset-password" element={<ResetPassword />} />
               <Route element={<PrivateRoute />}>
-                {/* <Route path={ROUTES.DASHBOARD} element={<DashboardRouter />} /> */}
+                <Route path={ROUTES.DASHBOARD} element={<DashboardRouter />} />
                 <Route
                   element={<RoleBasedRoute allowedRoles={[USER_ROLES.ADMIN]} />}
                 >

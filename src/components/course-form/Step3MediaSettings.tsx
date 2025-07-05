@@ -1,12 +1,11 @@
 import React from "react";
-import { CourseForm, CourseFormErrors } from "@/types/course";
+import { CourseFormData, CourseFormErrors } from "@/types/course";
 import { DIFFICULTY_LEVELS } from "@/constants/courseCnts";
 
 interface Props {
-  form: CourseForm;
-  setForm: React.Dispatch<React.SetStateAction<CourseForm>>;
+  form: CourseFormData;
+  setForm: React.Dispatch<React.SetStateAction<CourseFormData>>;
   errors: CourseFormErrors;
-  setErrors: React.Dispatch<React.SetStateAction<CourseFormErrors>>;
 }
 
 const Step3MediaSettings: React.FC<Props> = ({ form, setForm, errors }) => {
@@ -16,18 +15,21 @@ const Step3MediaSettings: React.FC<Props> = ({ form, setForm, errors }) => {
     const { name, value } = e.target;
     setForm((prev) => ({
       ...prev,
-      [name]: name === "duration" ? parseFloat(value) : value,
+      // Ensure duration is stored as a number
+      [name]: name === "estimatedDuration" ? parseFloat(value) || 0 : value,
     }));
   };
 
   const handleCloudinaryUpload = () => {
+    // This Cloudinary logic is good, assuming it's set up correctly.
     const widget = (window as any).cloudinary.createUploadWidget(
       {
-        cloudName: "dxwea1hku",
-        uploadPreset: "skillup",
+        cloudName: "dxwea1hku", // Replace with your cloud name
+        uploadPreset: "skillup", // Replace with your preset
         multiple: false,
         sources: ["local", "url", "camera"],
-        cropping: false,
+        cropping: true, // Enable cropping for consistent aspect ratio
+        croppingAspectRatio: 16 / 9,
       },
       (error: any, result: any) => {
         if (!error && result.event === "success") {
@@ -39,24 +41,25 @@ const Step3MediaSettings: React.FC<Props> = ({ form, setForm, errors }) => {
   };
 
   return (
-    <div className="space-y-5">
+    // The main container for this step
+    <div className="space-y-6 max-h-[60vh] overflow-y-auto pr-4">
       {/* Cover Image */}
       <div>
         <label className="block mb-1 text-sm font-medium">
-          Cover Image* (1200x600px)
+          Cover Image* (Recommended: 16:9 ratio)
         </label>
         {form.coverImage ? (
-          <div className="relative w-full">
+          <div className="relative w-full max-w-lg">
             <img
               src={form.coverImage}
               alt="Cover"
               className="w-full rounded shadow"
             />
             <button
-              className="absolute top-2 right-2 bg-red-500 text-white rounded px-2 py-1 text-xs"
+              className="absolute top-2 right-2 bg-red-600 text-white rounded-full p-1 leading-none hover:bg-red-700"
               onClick={() => setForm((f) => ({ ...f, coverImage: "" }))}
             >
-              Remove
+              &#x2715;
             </button>
           </div>
         ) : (
@@ -75,14 +78,14 @@ const Step3MediaSettings: React.FC<Props> = ({ form, setForm, errors }) => {
       {/* Intro Video */}
       <div>
         <label className="block mb-1 text-sm font-medium">
-          Intro Video (YouTube)
+          Intro Video (e.g., YouTube, Vimeo)
         </label>
         <input
           type="url"
           name="introVideo"
-          value={form.introVideo}
+          value={form.introVideo || ""}
           onChange={handleChange}
-          className="w-full rounded border p-2 dark:bg-gray-800"
+          className="w-full rounded border p-2 dark:bg-gray-800 dark:border-gray-600"
           placeholder="https://youtube.com/watch?v=..."
         />
         {errors.introVideo && (
@@ -90,46 +93,43 @@ const Step3MediaSettings: React.FC<Props> = ({ form, setForm, errors }) => {
         )}
       </div>
 
-      {/* Difficulty */}
+      {/* Difficulty Level */}
       <div>
         <label className="block mb-1 text-sm font-medium">
           Difficulty Level
         </label>
-        <div className="flex items-center gap-4">
+        <select
+          name="level"
+          value={form.level}
+          onChange={handleChange}
+          className="w-full p-2 rounded border dark:bg-gray-800 dark:border-gray-600"
+        >
           {DIFFICULTY_LEVELS.map((level) => (
-            <label
-              key={level.value}
-              className="flex items-center gap-1 text-sm"
-            >
-              <input
-                type="radio"
-                name="difficulty"
-                value={level.value}
-                checked={form.level === level.value}
-                onChange={handleChange}
-              />
+            <option key={level.value} value={level.value}>
               {level.label}
-            </label>
+            </option>
           ))}
-        </div>
+        </select>
       </div>
 
-      {/* Duration */}
+      {/* Estimated Duration */}
       <div>
         <label className="block mb-1 text-sm font-medium">
-          Estimated Duration (hours)
+          Estimated Duration (in hours)
         </label>
         <input
           type="number"
-          name="duration"
+          name="estimatedDuration"
           value={form.estimatedDuration}
           min={0}
           step={0.5}
           onChange={handleChange}
-          className="w-full p-2 rounded border dark:bg-gray-800"
+          className="w-full p-2 rounded border dark:bg-gray-800 dark:border-gray-600"
         />
         {errors.estimatedDuration && (
-          <p className="text-xs text-red-500 mt-1">{errors.estimatedDuration}</p>
+          <p className="text-xs text-red-500 mt-1">
+            {errors.estimatedDuration}
+          </p>
         )}
       </div>
     </div>

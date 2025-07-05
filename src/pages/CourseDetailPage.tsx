@@ -36,7 +36,7 @@ export function CourseDetailPage() {
 
   useEffect(() => {
     if (courseId) {
-      const foundCourse = courses.find((c) => c._id === courseId);
+      const foundCourse = courses.find((c) => c.id === courseId);
       setCourse(foundCourse || null);
     }
   }, [courseId]);

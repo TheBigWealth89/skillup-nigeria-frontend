@@ -8,7 +8,7 @@ class CourseService {
    * Corresponds to: createCourse
    * @route POST /course
    */
-  async create(courseData: Omit<Course, "_id" | "createdBy">): Promise<Course> {
+  async create(courseData: Omit<Course, "id" | "createdBy">): Promise<Course> {
     const response = await apiClient.post("/course", courseData);
     return response.data.data;
   }
@@ -20,9 +20,20 @@ class CourseService {
   async getAll(
     filters: CourseFilters = {}
   ): Promise<{ data: Course[]; total: number; pages: number }> {
-    // Axios automatically converts the 'params' object into a query string
-    // e.g., { page: 1, search: 'react' } becomes ?page=1&search=react
     const response = await apiClient.get("/course", { params: filters });
+    return response.data;
+  }
+
+  /**
+   * Corresponds to: getPendingCourses
+   * @route GET /course/pending
+   */
+  async getPending(
+    filters: CourseFilters = {}
+  ): Promise<{ data: Course[]; total: number; pages: number }> {
+    const response = await apiClient.get("/course/pending", {
+      params: filters,
+    });
     return response.data;
   }
 
@@ -47,7 +58,7 @@ class CourseService {
   /**
    * Corresponds to: deleteCourse
    * @route DELETE /course/:id
-     */
+   */
   async delete(id: string): Promise<{ message: string }> {
     const response = await apiClient.delete(`/course/${id}`);
     return response.data;
@@ -73,6 +84,5 @@ class CourseService {
     return response.data;
   }
 }
-
 
 export default new CourseService();

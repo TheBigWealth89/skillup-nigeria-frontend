@@ -1,15 +1,15 @@
-
-
 import React from "react";
-import { CourseForm, CourseFormErrors } from "@/types/course";  
+import { CourseFormData, CourseFormErrors } from "@/types/course";
 import { CATEGORIES } from "@/constants/courseCnts";
 import Select from "react-select";
 import dynamic from "next/dynamic";
-const RichTextEditor = dynamic(() => import("@uiw/react-md-editor"), { ssr: false });
+const RichTextEditor = dynamic(() => import("@uiw/react-md-editor"), {
+  ssr: false,
+});
 
 interface Props {
-  form: CourseForm;
-  setForm: React.Dispatch<React.SetStateAction<CourseForm>>;
+  form: CourseFormData;
+  setForm: React.Dispatch<React.SetStateAction<CourseFormData>>;
   errors: CourseFormErrors;
   setErrors: React.Dispatch<React.SetStateAction<CourseFormErrors>>;
 }
@@ -41,6 +41,32 @@ const Step1CourseDetails: React.FC<Props> = ({ form, setForm, errors }) => {
       tags: prev.tags.filter((t) => t !== tag),
     }));
   };
+
+  const handlePrerequisiteAdd = (e: React.KeyboardEvent<HTMLInputElement>) => {
+    const val = (e.target as HTMLInputElement).value.trim();
+    if (e.key === "Enter" && val) {
+      e.preventDefault();
+      if (!form.prerequisites.includes(val)) {
+        setForm((prev) => ({
+          ...prev,
+          prerequisites: [...prev.prerequisites, val],
+        }));
+        (e.target as HTMLInputElement).value = "";
+      }
+    }
+  };
+
+  const handlePrerequisiteRemove = (prereq: string) => {
+    setForm((prev) => ({
+      ...prev,
+      prerequisites: prev.prerequisites.filter((p) => p !== prereq),
+    }));
+  };
+
+  const categoryOptions = CATEGORIES.map((category) => ({
+    label: category.charAt(0).toUpperCase() + category.slice(1), // e.g., "Programming"
+    value: category, // e.g., "programming" (all lowercase)
+  }));
 
   return (
     <div className="space-y-6">
@@ -74,10 +100,16 @@ const Step1CourseDetails: React.FC<Props> = ({ form, setForm, errors }) => {
           Category<span className="text-red-500">*</span>
         </label>
         <Select
-          options={CATEGORIES.map((c) => ({ label: c, value: c }))}
-          value={form.category ? { label: form.category, value: form.category } : null}
+          options={categoryOptions}
+          value={
+            categoryOptions.find((opt) => opt.value === form.category) || null
+          }
           onChange={(opt) =>
-            setForm((prev) => ({ ...prev, category: opt?.value || "" }))
+            // Set the form's category to the selected value or undefined
+            setForm((prev) => ({
+              ...prev,
+              category: opt?.value as typeof prev.category | undefined,
+            }))
           }
           isClearable
           className="text-sm"
@@ -132,6 +164,38 @@ const Step1CourseDetails: React.FC<Props> = ({ form, setForm, errors }) => {
           placeholder="Add tag and press Enter..."
         />
         {errors.tags && <p className="text-xs text-red-500">{errors.tags}</p>}
+      </div>
+
+      <div>
+        <label className="block mb-1 font-medium text-sm">
+          Prerequisites{" "}
+          <span className="text-xs text-gray-500">
+            (What should students know beforehand?)
+          </span>
+        </label>
+        <div className="flex flex-wrap gap-2 mb-2">
+          {form.prerequisites.map((prereq, index) => (
+            <span
+              key={index}
+              className="px-2 py-1 rounded-full bg-green-100 text-green-800 text-xs flex items-center gap-1"
+            >
+              {prereq}
+              <button
+                onClick={() => handlePrerequisiteRemove(prereq)}
+                className="text-red-500 hover:text-red-700"
+              >
+                ×
+              </button>
+            </span>
+          ))}
+        </div>
+        <input
+          type="text"
+          onKeyDown={handlePrerequisiteAdd}
+          className="w-full rounded border px-3 py-2 dark:bg-gray-800"
+          placeholder="Add prerequisite and press Enter..."
+        />
+        {/* You can add error display here if you implement validation for prerequisites */}
       </div>
     </div>
   );

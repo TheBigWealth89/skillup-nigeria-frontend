@@ -6,9 +6,15 @@ import { Label } from "@/components/ui/label";
 import { Eye, EyeOff } from "lucide-react";
 import {Link} from "react-router-dom";
 
+interface LoginFormData {
+  identifier: string;
+  password: string;
+  rememberMe: boolean;
+}
+
 interface LoginFormProps {
-  formData: any;
-  handleInputChange: (field: string, value: string) => void;
+  formData: LoginFormData;
+  handleInputChange: (field: keyof LoginFormData, value: string | boolean) => void;
   handleSubmit: (e: React.FormEvent) => void;
   showPassword: boolean;
   setShowPassword: (show: boolean) => void;
@@ -80,7 +86,7 @@ const LoginForm: React.FC<LoginFormProps> = ({
             type="checkbox"
             checked={formData.rememberMe}
             onChange={(e) =>
-              handleInputChange("rememberMe", e.target.checked as any)
+              handleInputChange("rememberMe", e.target.checked)
             }
             className="mr-2"
           />
@@ -91,8 +97,12 @@ const LoginForm: React.FC<LoginFormProps> = ({
           className="text-sm text-blue-600 hover:text-blue-700 font-medium"
           whileHover={{ scale: 1.05 }}
         >
+<<<<<<< HEAD
             <Link to="/reset-password">Forgot Password?</Link>
            
+=======
+          Forgot Password?  
+>>>>>>> 4612340615d78f9d84f31528b9056bd2543fffc8
         </motion.button>
       </motion.div>
       <motion.div whileHover={{ scale: 1.02 }} whileTap={{ scale: 0.98 }}>

@@ -1,77 +1,91 @@
-
 export interface Instructor {
-  _id: string; 
+  id: string;
   name: string;
+  firstName: string;
+  lastName: string;
   avatar?: string;
 }
+// src/types/course.types.ts (Example file path)
 
-// Matches the 'resources' array inside the syllabus
-export interface SyllabusResource {
-  _id?: string;
+// --- Base Interfaces that match the new backend sub-documents ---
+
+export interface Resource {
+  id?: string;
   title: string;
   url: string;
-  type: "video" | "article" | "exercise";
+  resourceType: "video" | "article" | "exercise";
+  duration: number; // in minutes
 }
 
-// Matches the 'syllabus' array items from your backend schema
-export interface SyllabusWeek {
-  _id?: string;
-  week: number;
+export interface Lesson {
+  id?: string;
   title: string;
-  topics: string[];
-  resources: SyllabusResource[];
+  description?: string;
+  resources: Resource[];
+  isFreePreview: boolean;
 }
 
-// --- Main Course Interface (Matches API Response) ---
-// This should be the single source of truth for what a "Course" object looks like.
+export interface Module {
+  id?: string;
+  title: string;
+  description?: string;
+  lessons: Lesson[];
+}
+
+// --- Main Course Interface (Matches the API response) ---
 export interface Course {
-  _id: string;
-  title:string;
+  learnersEnrolled: any;
+  status: string;
+  id: string;
+  title: string;
   category: "programming" | "design" | "business" | "language";
   description: string;
-  createdBy: Instructor;
-  syllabus: SyllabusWeek[]; // <-- FIX: Matches the backend schema
+  createdBy: {
+    // Assuming it will be populated
+    id: string;
+    name: string;
+  };
+  modules: Module[]; // The new structured syllabus
   coverImage?: string;
   introVideo?: string;
-  isApproved: boolean; // <-- FIX: Renamed from 'approved'
-  approvedBy?: Instructor;
+  isApproved: boolean;
   level: "beginner" | "intermediate" | "advanced";
-  estimatedDuration?: number; // <-- FIX: Renamed and changed type to number
+  estimatedDuration?: number; // in hours
   prerequisites: string[];
   tags: string[];
-  isActive: boolean;
-  enrollmentCount?: number; // <-- FIX: Renamed from 'learnersEnrolled'
+  totalLessons: number; // From the new virtual property
+  enrollmentCount?: number;
   createdAt: string;
   updatedAt: string;
 }
 
-// --- Form-Related Interfaces (Derived from the main Course interface) ---
-
-// Use TypeScript's "Omit" and "Pick" to create the form type from the main Course type.
-// This reduces code duplication and ensures consistency.
-export type CourseForm = Pick<
+// --- Form Data Interface ---
+// This represents the data needed to CREATE a course.
+// We build it from the main Course interface for consistency.
+export type CourseFormData = Pick<
   Course,
-  | 'title'
-  | 'category'
-  | 'description'
-  | 'tags'
-  | 'syllabus'
-  | 'prerequisites'
-  | 'coverImage'
-  | 'introVideo'
-  | 'level'
+  | "title"
+  | "category"
+  | "description"
+  | "level"
+  | "prerequisites"
+  | "tags"
+  | "coverImage"
+  | "introVideo"
 > & {
-  // Add fields that are different on the form
-  estimatedDuration: number; // Keep as number for validation
+  // The syllabus on the form will be represented by the modules array
+  modules: Module[];
+  estimatedDuration: number; // Make it non-optional on the form
 };
 
-// Use TypeScript's "Partial" and "Record" for a flexible error type.
-// This means you don't have to manually list every possible error field.
-export type CourseFormErrors = Partial<Record<keyof CourseForm, string>>;
+// A flexible error type for your form validation
+export type CourseFormErrors = Partial<
+  Record<keyof CourseFormData | "syllabus", string>
+>;
 
 // --- Other Related Interfaces ---
 export interface Enrollment {
-  _id: string;
+  id: string;
   user: string; // Or a populated User object
   course: string; // Or a populated Course object
   enrolledAt: string;

@@ -1,9 +1,9 @@
 
 import React from "react";
-import { CourseForm } from "@/types/course";
+import { CourseFormData } from "@/types/course";
 
 interface Props {
-  form: CourseForm;
+  form: CourseFormData;
 }
 
 const Step4ReviewSubmit: React.FC<Props> = ({ form }) => {
