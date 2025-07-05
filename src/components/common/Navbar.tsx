@@ -6,11 +6,14 @@ import { useAuthStore } from "@/store/authStore";
 import { Button } from "@/components/ui/button";
 import { ROUTES } from "@/constants";
 import { Bell, GraduationCap } from "lucide-react";
+import { courses } from "@/mock/courseMock";
 
 const Navbar: React.FC = () => {
   const [isMenuOpen, setIsMenuOpen] = useState<false | "search" | "avatar">(
     false
   );
+  const [searchQuery, setSearchQuery] = useState("");
+  const [showResults, setShowResults] = useState(false);
   const { theme, toggleTheme } = useTheme();
   const { user, logout } = useAuthStore();
   const navigate = useNavigate();
@@ -19,29 +22,45 @@ const Navbar: React.FC = () => {
     navigate(ROUTES.HOME);
   };
 
+  // Filter courses by title (case-insensitive)
+  const filteredCourses = courses.filter((course) =>
+    course.title.toLowerCase().includes(searchQuery.toLowerCase())
+  );
+
   return (
     <nav className="bg-background text-foreground shadow-md border-b border-border sticky top-0 z-50 transition-colors duration-300">
       <div className="max-w-full mx-auto px-4 sm:px-6 lg:px-8">
         <div className="flex justify-between items-center h-16 w-full">
           <div className="flex items-center space-x-3">
-                        <div className="w-8 h-8 bg-primary rounded-lg flex items-center justify-center">
-                          <GraduationCap className="h-5 w-5 text-primary-foreground" />
-                        </div>
-                        <div>
-                          <h1 className="text-lg font-bold text-foreground">
-                            SkillUp Nigeria
-                          </h1>
-                        </div>
-                      </div>
+            <div className="w-8 h-8 bg-primary rounded-lg flex items-center justify-center">
+              <GraduationCap className="h-5 w-5 text-primary-foreground" />
+            </div>
+            <div>
+              <h1 className="text-lg font-bold text-foreground">
+                SkillUp Nigeria
+              </h1>
+            </div>
+          </div>
 
           {/* Search Bar (centered, hidden on mobile) */}
           <div className="hidden md:flex flex-1 justify-center px-4">
-            <form className="w-full max-w-md">
+            <form
+              className="w-full max-w-md"
+              onSubmit={(e) => e.preventDefault()}
+              autoComplete="off"
+            >
               <div className="relative">
                 <input
                   type="text"
                   placeholder="Search courses, topics..."
                   className="w-full pl-4 pr-10 py-2 rounded-full border border-gray-200 dark:border-gray-700 focus:border-blue-500 focus:ring-2 focus:ring-blue-100 dark:focus:ring-blue-900 shadow-sm text-sm bg-white dark:bg-gray-900 text-gray-900 dark:text-gray-100 transition-all"
+                  value={searchQuery}
+                  onChange={(e) => {
+                    setSearchQuery(e.target.value);
+                    setShowResults(true);
+                  }}
+                  onFocus={() => setShowResults(true)}
+                  onBlur={() => setTimeout(() => setShowResults(false), 150)}
                 />
                 <button
                   type="submit"
@@ -62,6 +81,37 @@ const Navbar: React.FC = () => {
                     />
                   </svg>
                 </button>
+                {/* Dropdown results */}
+                {showResults && searchQuery && (
+                  <div className="absolute left-0 right-0 mt-2 bg-white dark:bg-gray-900 border border-gray-200 dark:border-gray-700 rounded-lg shadow-lg z-50 max-h-64 overflow-y-auto">
+                    {filteredCourses.length > 0 ? (
+                      filteredCourses.slice(0, 6).map((course) => (
+                        <div
+                          key={course.id}
+                          className="px-4 py-2 hover:bg-blue-50 dark:hover:bg-gray-800 cursor-pointer flex items-center space-x-2"
+                          onMouseDown={() => {
+                            navigate(`/course/${course.id}`);
+                            setShowResults(false);
+                            setSearchQuery("");
+                          }}
+                        >
+                          <img
+                            src={course.coverImage}
+                            alt={course.title}
+                            className="w-8 h-8 rounded object-cover mr-2"
+                          />
+                          <span className="text-sm text-gray-900 dark:text-gray-100">
+                            {course.title}
+                          </span>
+                        </div>
+                      ))
+                    ) : (
+                      <div className="px-4 py-2 text-gray-500 text-sm">
+                        No courses found.
+                      </div>
+                    )}
+                  </div>
+                )}
               </div>
             </form>
           </div>
@@ -301,15 +351,27 @@ const Navbar: React.FC = () => {
               </button>
               {/* Mobile search dropdown */}
               {isMenuOpen === "search" && (
-                <div className="fixed inset-0 top-5  flex flex-col items-center justify-start z-50 p-4">
-                  <div className="w-full max-w-lg mt-8">
-                    <form className="w-full">
+                <div
+                  className="fixed inset-0 top-5 flex flex-col items-center justify-start z-50 p-4 bg-black/40"
+                  onClick={() => setIsMenuOpen(false)}
+                >
+                  <div className="w-full max-w-lg mt-8 bg-white dark:bg-gray-900 rounded-lg shadow-lg p-4">
+                    <form
+                      className="w-full"
+                      onSubmit={(e) => e.preventDefault()}
+                      autoComplete="off"
+                    >
                       <div className="relative">
                         <input
                           type="text"
                           placeholder="Search courses, topics..."
                           className="w-full pl-4 pr-10 py-3 rounded-full border border-gray-200 focus:border-blue-500 focus:ring-2 focus:ring-blue-100 shadow-sm text-base transition-all"
                           autoFocus
+                          value={searchQuery}
+                          onChange={(e) => {
+                            setSearchQuery(e.target.value);
+                            setShowResults(true);
+                          }}
                         />
                         <button
                           type="submit"
@@ -330,6 +392,38 @@ const Navbar: React.FC = () => {
                             />
                           </svg>
                         </button>
+                        {/* Dropdown results */}
+                        {showResults && searchQuery && (
+                          <div className="absolute left-0 right-0 mt-2 bg-white dark:bg-gray-900 border border-gray-200 dark:border-gray-700 rounded-lg shadow-lg z-50 max-h-64 overflow-y-auto">
+                            {filteredCourses.length > 0 ? (
+                              filteredCourses.slice(0, 6).map((course) => (
+                                <div
+                                  key={course.id}
+                                  className="px-4 py-2 hover:bg-blue-50 dark:hover:bg-gray-800 cursor-pointer flex items-center space-x-2"
+                                  onMouseDown={() => {
+                                    navigate(`/course/${course.id}`);
+                                    setShowResults(false);
+                                    setSearchQuery("");
+                                    setIsMenuOpen(false);
+                                  }}
+                                >
+                                  <img
+                                    src={course.coverImage}
+                                    alt={course.title}
+                                    className="w-8 h-8 rounded object-cover mr-2"
+                                  />
+                                  <span className="text-sm text-gray-900 dark:text-gray-100">
+                                    {course.title}
+                                  </span>
+                                </div>
+                              ))
+                            ) : (
+                              <div className="px-4 py-2 text-gray-500 text-sm">
+                                No courses found.
+                              </div>
+                            )}
+                          </div>
+                        )}
                       </div>
                     </form>
                   </div>

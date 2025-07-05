@@ -18,25 +18,25 @@ const LearnerDashboard: React.FC = () => {
   const stats = [
     {
       title: "Enrolled Courses",
-      value: "8",
+      value: "5",
       icon: BookOpen,
       color: "text-blue-600",
     },
     {
       title: "Completed",
-      value: "3",
+      value: "1",
       icon: CheckCircle,
       color: "text-green-600",
     },
     {
       title: "Certificates",
-      value: "2",
+      value: "0",
       icon: Award,
       color: "text-purple-600",
     },
     {
       title: "Study Hours",
-      value: "124",
+      value: "10",
       icon: Clock,
       color: "text-orange-600",
     },
