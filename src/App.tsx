@@ -7,6 +7,7 @@ import MainLayout from "./layouts/MainLayout";
 import { ThemeProvider } from "./context/ThemeContext";
 import Home from "./pages/Home";
 import AuthPage from "./pages/AuthPage";
+import ResetPassword from "./pages/ResetPassword";
 import AdminDashboard from "./pages/AdminDashboard";
 import InstructorDashboard from "./pages/InstructorDashboard";
 import LearnerDashboard from "./pages/LearnerDashboard";
@@ -41,7 +42,7 @@ const App = () => (
               />
               <Route index element={<Home />} />
               <Route path="/auth" element={<AuthPage />} />
-
+              <Route path="/reset-password" element={<ResetPassword />} />
               <Route element={<PrivateRoute />}>
                 <Route path={ROUTES.DASHBOARD} element={<DashboardRouter />} />
                 <Route

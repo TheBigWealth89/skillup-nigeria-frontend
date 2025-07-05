@@ -45,6 +45,15 @@ class authService {
     }
   }
 
+  async resetPassword(email: string) {
+    try {
+      const response = await apiClient.post("/auth/forgot-password", { email });
+      return response.data;
+    } catch (error) {
+      throw error;
+    }
+  }
+
   async logout() {
     try {
       await apiClient.post("/auth/logout", {});

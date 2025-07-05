@@ -117,7 +117,7 @@ export function CourseDetailPage() {
                 <GraduationCap className="h-5 w-5 text-primary-foreground" />
               </div>
               <div>
-                <h1 className="text-lg font-bold text-foreground">
+                <h1 className="text-sm font-bold text-foreground">
                   SkillUp Nigeria
                 </h1>
               </div>
