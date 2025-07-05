@@ -115,7 +115,7 @@ export function CourseCard({ course, onViewDetails }: CourseCardProps) {
           <div className="flex items-center space-x-4 text-xs text-muted-foreground">
             <div className="flex items-center space-x-1">
               <Clock className="h-3 w-3" />
-              <span>{course.duration}</span>
+              <span>{course.estimatedDuration}</span>
             </div>
             <div className="flex items-center space-x-1">
               <Users className="h-3 w-3" />

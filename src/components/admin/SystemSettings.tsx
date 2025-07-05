@@ -1,20 +1,26 @@
-
-import React, { useState } from 'react';
-import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card';
-import { Button } from '@/components/ui/button';
-import { Switch } from '@/components/ui/switch';
-import { Label } from '@/components/ui/label';
-import { Textarea } from '@/components/ui/textarea';
-import { Input } from '@/components/ui/input';
-import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from '@/components/ui/select';
-import { Settings, Mail, Shield, Database } from 'lucide-react';
-import { useToast } from '@/hooks/use-toast';
+import React, { useState } from "react";
+import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
+import { Button } from "@/components/ui/button";
+import { Switch } from "@/components/ui/switch";
+import { Label } from "@/components/ui/label";
+import { Textarea } from "@/components/ui/textarea";
+import { Input } from "@/components/ui/input";
+import {
+  Select,
+  SelectContent,
+  SelectItem,
+  SelectTrigger,
+  SelectValue,
+} from "@/components/ui/select";
+import { Settings, Mail, Shield, Database } from "lucide-react";
+import { useToast } from "@/hooks/use-toast";
 
 const SystemSettings: React.FC = () => {
   const { toast } = useToast();
   const [maintenanceMode, setMaintenanceMode] = useState(false);
   const [allowInstructorSignup, setAllowInstructorSignup] = useState(true);
-  const [requireEmailVerification, setRequireEmailVerification] = useState(true);
+  const [requireEmailVerification, setRequireEmailVerification] =
+    useState(true);
   const [autoApproveInstructors, setAutoApproveInstructors] = useState(false);
 
   const handleSaveSettings = () => {
@@ -78,7 +84,8 @@ const SystemSettings: React.FC = () => {
             <div className="space-y-0.5">
               <Label className="text-base">Auto-approve Instructors</Label>
               <p className="text-sm text-gray-600">
-                Automatically approve instructor applications without manual review
+                Automatically approve instructor applications without manual
+                review
               </p>
             </div>
             <Switch
@@ -110,7 +117,9 @@ const SystemSettings: React.FC = () => {
               </SelectTrigger>
               <SelectContent>
                 <SelectItem value="course-approval">Course Approval</SelectItem>
-                <SelectItem value="course-rejection">Course Rejection</SelectItem>
+                <SelectItem value="course-rejection">
+                  Course Rejection
+                </SelectItem>
                 <SelectItem value="user-warning">User Warning</SelectItem>
                 <SelectItem value="welcome">Welcome Email</SelectItem>
               </SelectContent>
@@ -119,7 +128,10 @@ const SystemSettings: React.FC = () => {
 
           <div className="space-y-2">
             <Label>Subject Line</Label>
-            <Input placeholder="Enter email subject..." defaultValue="Your course has been approved!" />
+            <Input
+              placeholder="Enter email subject..."
+              defaultValue="Your course has been approved!"
+            />
           </div>
 
           <div className="space-y-2">

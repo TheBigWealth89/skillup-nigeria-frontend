@@ -1,18 +1,17 @@
-
 export const CATEGORIES = [
-  "Programming",
-  "Design",
-  "Business",
-  "Language",
-  "Marketing",
-  "Finance",
-  "Health",
+  "programming",
+  "design",
+  "business",
+  "language",
+  "marketing",
+  "finance",
+  "health",
 ];
 
 export const DIFFICULTY_LEVELS = [
-  { label: "Beginner", value: "Beginner" },
-  { label: "Intermediate", value: "Intermediate" },
-  { label: "Advanced", value: "Advanced" },
+  { label: "Beginner", value: "beginner" },
+  { label: "Intermediate", value: "intermediate" },
+  { label: "Advanced", value: "advanced" },
 ];
 
 export const RESOURCE_TYPES = ["Video", "Article", "Exercise"] as const;

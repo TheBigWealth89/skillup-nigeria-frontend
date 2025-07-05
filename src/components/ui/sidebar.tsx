@@ -232,7 +232,8 @@ const Sidebar = React.forwardRef<
         />
         <div
           className={cn(
-            "duration-200 fixed inset-y-0 z-10 hidden h-svh w-[--sidebar-width] transition-[left,right,width] ease-linear md:flex",
+            // Use flex layout and column direction to ensure header, content, and footer stack without overlap
+            "duration-200 absolute top-16 bottom-0 z-10 h-full w-[--sidebar-width] transition-[left,right,width] ease-linear hidden md:flex flex-col",
             side === "left"
               ? "left-0 group-data-[collapsible=offcanvas]:left-[calc(var(--sidebar-width)*-1)]"
               : "right-0 group-data-[collapsible=offcanvas]:right-[calc(var(--sidebar-width)*-1)]",
@@ -246,8 +247,13 @@ const Sidebar = React.forwardRef<
         >
           <div
             data-sidebar="sidebar"
-            className="flex h-full w-full flex-col bg-sidebar group-data-[variant=floating]:rounded-lg group-data-[variant=floating]:border group-data-[variant=floating]:border-sidebar-border group-data-[variant=floating]:shadow"
+            className="flex flex-col h-full w-full bg-sidebar group-data-[variant=floating]:rounded-lg group-data-[variant=floating]:border group-data-[variant=floating]:border-sidebar-border group-data-[variant=floating]:shadow"
+            style={{ minHeight: 0 }}
           >
+            {/*
+              Expecting SidebarHeader, SidebarContent, SidebarFooter to be used as children.
+              Ensure SidebarContent uses flex-1 and overflow-auto to fill available space.
+            */}
             {children}
           </div>
         </div>

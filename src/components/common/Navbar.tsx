@@ -2,7 +2,7 @@ import React, { useState } from "react";
 import { useTheme } from "@/context/ThemeContext";
 import { Link, useNavigate } from "react-router-dom";
 import { motion } from "framer-motion";
-import { useAuthStore, useIsAuthenticated } from "@/store/authStore";
+import { useAuthStore } from "@/store/authStore";
 import { Button } from "@/components/ui/button";
 import { ROUTES } from "@/constants";
 import { Bell } from "lucide-react";
@@ -185,7 +185,7 @@ const Navbar: React.FC = () => {
 
                     <div className="border-b mx-3">
                       <Link
-                        to={ROUTES.COURSES}
+                        to={ROUTES.ADMIN_DASHBOARD}
                         className="block px-2 py-2 text-gray-700 dark:text-gray-200 hover:bg-blue-50 dark:hover:bg-gray-800 text-sm"
                       >
                         Dashboard
@@ -392,7 +392,7 @@ const Navbar: React.FC = () => {
                   </div>
 
                   <Link
-                    to={ROUTES.COURSES}
+                    to={ROUTES.ADMIN_DASHBOARD}
                     className="block px-4 py-2 text-gray-700 hover:bg-blue-50 text-sm"
                   >
                     Dashboard
