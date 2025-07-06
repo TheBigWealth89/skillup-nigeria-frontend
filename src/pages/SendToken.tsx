@@ -25,7 +25,7 @@ const SendToken = () => {
   };
 
   return (
-    <div className="max-w-md mx-auto mt-8 p-6 bg-white rounded-lg shadow-md">
+    <div className="max-w-md mx-auto mt-20 p-6 bg-white rounded-lg shadow-sm border">
       <h1 className="text-2xl font-bold mb-6 text-center">Reset Password</h1>
       <form onSubmit={handlerSendToken} className="space-y-4">
         <div>

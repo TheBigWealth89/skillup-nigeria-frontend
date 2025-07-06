@@ -13,8 +13,10 @@ import {
   CheckCircle,
   Target,
 } from "lucide-react";
-
+import { useNavigate } from "react-router-dom";
 const LearnerDashboard: React.FC = () => {
+  const navigate = useNavigate();
+ 
   const stats = [
     {
       title: "Enrolled Courses",
@@ -217,7 +219,11 @@ const LearnerDashboard: React.FC = () => {
                           whileHover={{ scale: 1.02 }}
                           whileTap={{ scale: 0.98 }}
                         >
-                          <Button size="sm" className="w-full">
+                          <Button
+                            size="sm"
+                            className="w-full"
+                            onClick={() => navigate("/course/course2/learn")}
+                          >
                             Continue Learning
                           </Button>
                         </motion.div>

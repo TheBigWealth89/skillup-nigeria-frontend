@@ -202,11 +202,16 @@ export function CourseDetailPage() {
                   Join thousands of students already enrolled in this course
                 </p>
               </div>
+
               <Button
                 size="lg"
-                onClick={handleEnroll}
-                disabled={isEnrolling || isEnrolled}
                 className="min-w-[160px]"
+                onClick={
+                  isEnrolled
+                    ? () => navigate("/course/course2/learn")
+                    : handleEnroll
+                }
+                disabled={isEnrolling || (isEnrolled && false)}
               >
                 {isEnrolling ? (
                   <div className="flex items-center space-x-2">

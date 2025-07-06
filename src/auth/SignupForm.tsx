@@ -221,7 +221,7 @@ const SignupForm: React.FC<SignupFormProps> = ({
       <motion.div whileHover={{ scale: 1.02 }} whileTap={{ scale: 0.98 }}>
         <Button
           type="submit"
-          className="w-full bg-gradient-to-r from-blue-600 to-green-600 hover:from-blue-700 hover:to-green-700 py-3 text-lg font-semibold"
+          className="w-full bg-primary hover:from-blue-700 hover:to-green-700 py-3 text-lg font-semibold"
         >
           Create Account
         </Button>

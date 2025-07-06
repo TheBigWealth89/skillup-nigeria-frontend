@@ -64,7 +64,7 @@ export function CourseCard({ course, onViewDetails }: CourseCardProps) {
   };
 
   return (
-    <Card className="group cursor-pointer overflow-hidden border border-border/50 bg-card hover:shadow-xl hover:border-primary/20 transition-all duration-300 transform hover:-translate-y-1">
+    <Card className="group cursor-pointer overflow-hidden border border-border/50 bg-card hover:shadow-xl hover:border-primary/20 transition-all duration-300 transform hover:-translate-y-1 ">
       <div className="relative overflow-hidden" onClick={handleCardClick}>
         <img
           src={course.coverImage}

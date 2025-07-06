@@ -1,4 +1,4 @@
-import React, { useState } from "react";
+import React, { useState, useEffect } from "react";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { Button } from "@/components/ui/button";
 import { Switch } from "@/components/ui/switch";
@@ -14,6 +14,7 @@ import {
 } from "@/components/ui/select";
 import { Settings, Mail, Shield, Database } from "lucide-react";
 import { useToast } from "@/hooks/use-toast";
+import adminService from "@/services/adminService";
 
 const SystemSettings: React.FC = () => {
   const { toast } = useToast();
@@ -22,6 +23,29 @@ const SystemSettings: React.FC = () => {
   const [requireEmailVerification, setRequireEmailVerification] =
     useState(true);
   const [autoApproveInstructors, setAutoApproveInstructors] = useState(false);
+
+  // Add user state for stats
+  const [users, setUsers] = useState<any[]>([]);
+  const [loading, setLoading] = useState(true);
+  const [error, setError] = useState<string | null>(null);
+
+  useEffect(() => {
+    const fetchUsers = async () => {
+      try {
+        const response = await adminService.getAllUsers();
+        if (Array.isArray(response.data)) {
+          setUsers(response.data);
+        } else {
+          throw new Error("Invalid data format received from server");
+        }
+        setLoading(false);
+      } catch (err: any) {
+        setError(err.message || "Failed to fetch users");
+        setLoading(false);
+      }
+    };
+    fetchUsers();
+  }, []);
 
   const handleSaveSettings = () => {
     toast({
@@ -216,19 +240,27 @@ The SkillUp Team"
         <CardContent>
           <div className="grid grid-cols-2 md:grid-cols-4 gap-4">
             <div className="text-center p-4 bg-gray-50 rounded-lg">
-              <p className="text-2xl font-bold text-blue-600">2,547</p>
+              <p className="text-2xl font-bold text-blue-600">
+                {loading ? "..." : error ? "-" : users.length}
+              </p>
               <p className="text-sm text-gray-600">Total Users</p>
             </div>
             <div className="text-center p-4 bg-gray-50 rounded-lg">
-              <p className="text-2xl font-bold text-green-600">127</p>
-              <p className="text-sm text-gray-600">Active Courses</p>
+              <p className="text-2xl font-bold text-green-600">
+                {loading
+                  ? "..."
+                  : error
+                  ? "-"
+                  : users.filter((u) => u.status === "active").length}
+              </p>
+              <p className="text-sm text-gray-600">Active Users</p>
             </div>
             <div className="text-center p-4 bg-gray-50 rounded-lg">
-              <p className="text-2xl font-bold text-purple-600">89</p>
+              <p className="text-2xl font-bold text-purple-600">4</p>
               <p className="text-sm text-gray-600">Instructors</p>
             </div>
             <div className="text-center p-4 bg-gray-50 rounded-lg">
-              <p className="text-2xl font-bold text-orange-600">₦850K</p>
+              <p className="text-2xl font-bold text-orange-600">₦1K</p>
               <p className="text-sm text-gray-600">Revenue</p>
             </div>
           </div>

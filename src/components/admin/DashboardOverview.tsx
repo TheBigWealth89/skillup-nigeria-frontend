@@ -1,80 +1,130 @@
-
-import React from 'react';
-import { motion } from 'framer-motion';
-import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card';
-import { Button } from '@/components/ui/button';
-import { Badge } from '@/components/ui/badge';
-import { Users, BookOpen, Flag, Activity, TrendingUp, AlertTriangle } from 'lucide-react';
+import React, { useEffect, useState } from "react";
+import { motion } from "framer-motion";
+import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
+import { Button } from "@/components/ui/button";
+import { Badge } from "@/components/ui/badge";
+import {
+  Users,
+  BookOpen,
+  Flag,
+  Activity,
+  TrendingUp,
+  AlertTriangle,
+} from "lucide-react";
 
 interface DashboardOverviewProps {
   onNavigate: (tab: string) => void;
 }
 
-const DashboardOverview: React.FC<DashboardOverviewProps> = ({ onNavigate }) => {
+const DashboardOverview: React.FC<DashboardOverviewProps> = ({
+  onNavigate,
+}) => {
+  // Add state for users
+  const [users, setUsers] = useState<any[]>([]);
+  const [loading, setLoading] = useState(true);
+  const [error, setError] = useState<string | null>(null);
+
+  useEffect(() => {
+    // Dynamically import UserManagement to access its logic
+    // But since UserManagement fetches users via adminService, we can fetch here too
+    const fetchUsers = async () => {
+      try {
+        const adminService = (await import("@/services/adminService")).default;
+        const response = await adminService.getAllUsers();
+        if (Array.isArray(response.data)) {
+          setUsers(response.data);
+        } else {
+          throw new Error("Invalid data format received from server");
+        }
+        setLoading(false);
+      } catch (err: any) {
+        setError(err.message || "Failed to fetch users");
+        setLoading(false);
+      }
+    };
+    fetchUsers();
+  }, []);
+
   const stats = [
     {
-      title: 'Total Users',
-      value: '2,547',
-      change: '+12%',
+      title: "Total Users",
+      value: loading ? "..." : error ? "-" : users.length.toString(),
+      change: loading || error ? "" : `+${Math.floor(Math.random() * 10)}%`, // Placeholder change
       icon: Users,
-      color: 'text-blue-600',
-      bgColor: 'bg-blue-100'
+      color: "text-blue-600",
+      bgColor: "bg-blue-100",
     },
     {
-      title: 'Pending Approvals',
-      value: '23',
-      change: '+5',
+      title: "Pending Approvals",
+      value: "3",
+      change: "+2",
       icon: AlertTriangle,
-      color: 'text-orange-600',
-      bgColor: 'bg-orange-100'
+      color: "text-orange-600",
+      bgColor: "bg-orange-100",
     },
     {
-      title: 'Reported Content',
-      value: '8',
-      change: '-2',
+      title: "Reported Content",
+      value: "3",
+      change: "-1",
       icon: Flag,
-      color: 'text-red-600',
-      bgColor: 'bg-red-100'
+      color: "text-red-600",
+      bgColor: "bg-red-100",
     },
     {
-      title: 'Active Courses',
-      value: '127',
-      change: '+8%',
+      title: "Active Courses",
+      value: "7",
+      change: "+5%",
       icon: BookOpen,
-      color: 'text-green-600',
-      bgColor: 'bg-green-100'
-    }
+      color: "text-green-600",
+      bgColor: "bg-green-100",
+    },
   ];
 
   const quickActions = [
     {
-      title: 'Approve Courses',
-      description: 'Review pending course submissions',
-      action: () => onNavigate('courses'),
+      title: "Approve Courses",
+      description: "Review pending course submissions",
+      action: () => onNavigate("courses"),
       icon: BookOpen,
-      color: 'bg-blue-600 hover:bg-blue-700'
+      color: "bg-blue-600 hover:bg-blue-700",
     },
     {
-      title: 'Manage Users',
-      description: 'View and manage user accounts',
-      action: () => onNavigate('users'),
+      title: "Manage Users",
+      description: "View and manage user accounts",
+      action: () => onNavigate("users"),
       icon: Users,
-      color: 'bg-green-600 hover:bg-green-700'
+      color: "bg-green-600 hover:bg-green-700",
     },
     {
-      title: 'View Reports',
-      description: 'Handle reported content and issues',
-      action: () => onNavigate('reports'),
+      title: "View Reports",
+      description: "Handle reported content and issues",
+      action: () => onNavigate("reports"),
       icon: Flag,
-      color: 'bg-red-600 hover:bg-red-700'
-    }
+      color: "bg-red-600 hover:bg-red-700",
+    },
   ];
 
   const recentActivity = [
-    { action: 'Course "Web Development Basics" approved', time: '2 hours ago', type: 'approval' },
-    { action: 'User john.doe@email.com suspended', time: '4 hours ago', type: 'user' },
-    { action: 'Content reported: "Spam in comments"', time: '6 hours ago', type: 'report' },
-    { action: 'New instructor verification: Sarah Wilson', time: '1 day ago', type: 'verification' }
+    {
+      action: 'Course "Web Development Basics" approved',
+      time: "2 hours ago",
+      type: "approval",
+    },
+    {
+      action: "User john.doe@email.com suspended",
+      time: "4 hours ago",
+      type: "user",
+    },
+    {
+      action: 'Content reported: "Spam in comments"',
+      time: "6 hours ago",
+      type: "report",
+    },
+    {
+      action: "New instructor verification: Sarah Wilson",
+      time: "1 day ago",
+      type: "verification",
+    },
   ];
 
   return (
@@ -92,11 +142,17 @@ const DashboardOverview: React.FC<DashboardOverviewProps> = ({ onNavigate }) => 
               <CardContent className="p-6">
                 <div className="flex items-center justify-between">
                   <div>
-                    <p className="text-sm font-medium text-gray-600">{stat.title}</p>
-                    <p className="text-3xl font-bold text-gray-900">{stat.value}</p>
+                    <p className="text-sm font-medium text-gray-600">
+                      {stat.title}
+                    </p>
+                    <p className="text-3xl font-bold text-gray-900">
+                      {stat.value}
+                    </p>
                     <div className="flex items-center mt-2">
                       <TrendingUp className="h-4 w-4 text-green-600 mr-1" />
-                      <span className="text-sm font-medium text-green-600">{stat.change}</span>
+                      <span className="text-sm font-medium text-green-600">
+                        {stat.change}
+                      </span>
                     </div>
                   </div>
                   <div className={`p-3 rounded-full ${stat.bgColor}`}>
@@ -133,7 +189,9 @@ const DashboardOverview: React.FC<DashboardOverviewProps> = ({ onNavigate }) => 
                 >
                   <div className="flex flex-col items-center text-center">
                     <action.icon className="h-8 w-8 mb-3" />
-                    <h3 className="font-semibold text-lg mb-1">{action.title}</h3>
+                    <h3 className="font-semibold text-lg mb-1">
+                      {action.title}
+                    </h3>
                     <p className="text-sm opacity-90">{action.description}</p>
                   </div>
                 </Button>
@@ -159,12 +217,17 @@ const DashboardOverview: React.FC<DashboardOverviewProps> = ({ onNavigate }) => 
                 className="flex items-center justify-between p-4 bg-gray-50 rounded-lg"
               >
                 <div className="flex items-center gap-3">
-                  <div className={`w-2 h-2 rounded-full ${
-                    activity.type === 'approval' ? 'bg-green-500' :
-                    activity.type === 'user' ? 'bg-blue-500' :
-                    activity.type === 'report' ? 'bg-red-500' :
-                    'bg-orange-500'
-                  }`} />
+                  <div
+                    className={`w-2 h-2 rounded-full ${
+                      activity.type === "approval"
+                        ? "bg-green-500"
+                        : activity.type === "user"
+                        ? "bg-blue-500"
+                        : activity.type === "report"
+                        ? "bg-red-500"
+                        : "bg-orange-500"
+                    }`}
+                  />
                   <span className="text-gray-900">{activity.action}</span>
                 </div>
                 <span className="text-sm text-gray-500">{activity.time}</span>

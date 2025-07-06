@@ -1,7 +1,6 @@
 import React, { useState } from "react";
 import { useTheme } from "@/context/ThemeContext";
 import { Link, useNavigate } from "react-router-dom";
-import { motion } from "framer-motion";
 import { useAuthStore } from "@/store/authStore";
 import { Button } from "@/components/ui/button";
 import { ROUTES } from "@/constants";
@@ -17,9 +16,15 @@ const Navbar: React.FC = () => {
   const { theme, toggleTheme } = useTheme();
   const { user, logout } = useAuthStore();
   const navigate = useNavigate();
-  const handleLogout = () => {
-    logout();
-    navigate(ROUTES.HOME);
+  const handleLogout = async () => {
+    try {
+      await logout();
+      navigate(ROUTES.HOME);
+    } catch (error) {
+      // Optionally show a toast or alert here
+      // e.g. toast({ title: "Logout failed", description: "Please try again.", variant: "destructive" });
+      console.error("Logout failed", error);
+    }
   };
 
   // Filter courses by title (case-insensitive)
@@ -31,16 +36,18 @@ const Navbar: React.FC = () => {
     <nav className="bg-background text-foreground shadow-md border-b border-border sticky top-0 z-50 transition-colors duration-300">
       <div className="max-w-full mx-auto px-4 sm:px-6 lg:px-8">
         <div className="flex justify-between items-center h-16 w-full">
-          <div className="flex items-center space-x-3">
-            <div className="w-8 h-8 bg-primary rounded-lg flex items-center justify-center">
-              <GraduationCap className="h-5 w-5 text-primary-foreground" />
+          <Link to="/">
+            <div className="flex items-center space-x-3">
+              <div className="w-8 h-8 bg-primary rounded-lg flex items-center justify-center">
+                <GraduationCap className="h-5 w-5 text-primary-foreground" />
+              </div>
+              <div>
+                <h1 className="text-lg font-bold text-foreground">
+                  SkillUp Nigeria
+                </h1>
+              </div>
             </div>
-            <div>
-              <h1 className="text-lg font-bold text-foreground">
-                SkillUp Nigeria
-              </h1>
-            </div>
-          </div>
+          </Link>
 
           {/* Search Bar (centered, hidden on mobile) */}
           <div className="hidden md:flex flex-1 justify-center px-4">
@@ -164,33 +171,35 @@ const Navbar: React.FC = () => {
               </button>
             )}
             {user && (
-              <div
-                className="relative group px-4 py-2  rounded-full font-medium text-gray-700 dark:text-gray-100 hover:text-white hover:bg-gradient-to-r hover:from-blue-600 hover:to-green-600 dark:hover:from-blue-400 dark:hover:to-green-400 transition-all duration-200 shadow-sm focus:outline-none focus:ring-2 focus:ring-blue-200"
-                style={{ minWidth: 100 }}
-              >
-                <span className="flex items-center space-x-2">
-                  <svg
-                    className="w-5 h-5 text-blue-500 group-hover:text-white dark:text-blue-300 dark:group-hover:text-white transition-colors"
-                    fill="none"
-                    stroke="currentColor"
-                    strokeWidth="2"
-                    viewBox="0 0 24 24"
-                  >
-                    <path
-                      strokeLinecap="round"
-                      strokeLinejoin="round"
-                      d="M12 14l9-5-9-5-9 5 9 5z"
-                    />
-                    <path
-                      strokeLinecap="round"
-                      strokeLinejoin="round"
-                      d="M12 14l6.16-3.422A12.083 12.083 0 0112 21.5a12.083 12.083 0 01-6.16-10.922L12 14z"
-                    />
-                  </svg>
-                  <span>Courses</span>
-                </span>
-                <span className="absolute left-[17%] -bottom-1 w-0 h-0.5 bg-gradient-to-r from-blue-600 to-green-600 dark:from-blue-400 dark:to-green-400 group-hover:w-3/4 transition-all duration-200 rounded-full"></span>
-              </div>
+              <Link to="/">
+                <div
+                  className="relative group px-4 py-2 cursor-pointer rounded-full font-medium text-gray-700 dark:text-gray-100 hover:text-white hover:bg-primary transition-all duration-200 shadow-sm focus:outline-none focus:ring-2 focus:ring-blue-200"
+                  style={{ minWidth: 100 }}
+                >
+                  <span className="flex items-center space-x-2">
+                    <svg
+                      className="w-5 h-5 text-blue-500 group-hover:text-white dark:text-blue-300 dark:group-hover:text-white transition-colors"
+                      fill="none"
+                      stroke="currentColor"
+                      strokeWidth="2"
+                      viewBox="0 0 24 24"
+                    >
+                      <path
+                        strokeLinecap="round"
+                        strokeLinejoin="round"
+                        d="M12 14l9-5-9-5-9 5 9 5z"
+                      />
+                      <path
+                        strokeLinecap="round"
+                        strokeLinejoin="round"
+                        d="M12 14l6.16-3.422A12.083 12.083 0 0112 21.5a12.083 12.083 0 01-6.16-10.922L12 14z"
+                      />
+                    </svg>
+                    <span>Courses</span>
+                  </span>
+                  <span className="absolute left-[17%] -bottom-1 w-0 h-0.5 bg-primary group-hover:w-3/4 transition-all duration-200 rounded-full"></span>
+                </div>
+              </Link>
             )}
 
             {user ? (
@@ -222,12 +231,12 @@ const Navbar: React.FC = () => {
                     )}
                   </button>
                   {/* Dropdown menu */}
-                  <div className="absolute -right-1/2 mt-2 min-w-[250px] max-w-[360px] h-[229.333px] bg-white dark:bg-gray-900 border border-gray-200 dark:border-gray-700 rounded-lg py-2 z-50 opacity-0 group-hover:opacity-100 group-focus-within:opacity-100 pointer-events-none group-hover:pointer-events-auto group-focus-within:pointer-events-auto transition-opacity duration-150 shadow-md">
+                  <div className="absolute -right-1/2 mt-2 min-w-[250px] max-w-[360px] h-[180.333px] cursor-pointer bg-white dark:bg-gray-900 border border-gray-200 dark:border-gray-700 rounded-lg py-2 z-50 opacity-0 group-hover:opacity-100 group-focus-within:opacity-100 pointer-events-none group-hover:pointer-events-auto group-focus-within:pointer-events-auto transition-opacity duration-150 shadow-md">
                     <div className="px-2 py-2  border-b mx-3">
-                      <p className="font-semibold text-gray-900 dark:text-gray-100">
+                      <p className="font-semibold text-gray-900 dark:text-gray-100 mb-1">
                         {user.name.firstName} {user.name.lastName}
                       </p>
-                      <p className="block text-gray-700 dark:text-gray-300 hover:bg-blue-50 dark:hover:bg-gray-800 text-sm">
+                      <p className="block text-gray-700 dark:text-gray-300 hover:bg-blue-50 dark:hover:bg-gray-800 text-sm py-2 hover:rounded-md">
                         {user.username}
                       </p>
                     </div>
@@ -269,7 +278,7 @@ const Navbar: React.FC = () => {
                 <Link to="/auth">
                   <Button
                     size="sm"
-                    className="bg-gradient-to-r from-blue-600 to-green-600 hover:from-blue-700 hover:to-green-700"
+                    className="bg-primary hover:from-blue-700 hover:to-green-700"
                   >
                     Start Learning
                   </Button>
@@ -466,7 +475,7 @@ const Navbar: React.FC = () => {
                 <Link to="/auth">
                   <Button
                     size="sm"
-                    className="bg-gradient-to-r from-blue-600 to-green-600 hover:from-blue-700 hover:to-green-700"
+                    className="bg-primary hover:from-blue-700 hover:to-green-700"
                   >
                     Start Learning
                   </Button>
@@ -474,12 +483,12 @@ const Navbar: React.FC = () => {
               )}
               {/* Dropdown menu for avatar */}
               {user && isMenuOpen === "avatar" && (
-                <div className="absolute -right-1/2 mt-2 min-w-[250px] max-w-[360px] h-[229.333px] bg-white dark:bg-gray-900 border border-gray-200 dark:border-gray-700 rounded-lg py-2 z-50 opacity-0 group-hover:opacity-100 group-focus-within:opacity-100 pointer-events-none group-hover:pointer-events-auto group-focus-within:pointer-events-auto transition-opacity duration-150 shadow-md">
+                <div className="absolute -right-1/2 mt-2 min-w-[250px] max-w-[360px] h-[180.333px] cursor-pointer bg-white dark:bg-gray-900 border border-gray-200 dark:border-gray-700 rounded-lg py-2 z-50 opacity-0 group-hover:opacity-100 group-focus-within:opacity-100 pointer-events-none group-hover:pointer-events-auto group-focus-within:pointer-events-auto transition-opacity duration-150 shadow-md">
                   <div className="px-2 py-2  border-b mx-2">
                     <p className="font-semibold">
                       {user.name.firstName} {user.name.lastName}
                     </p>
-                    <p className="block text-gray-700 hover:bg-blue-50 text-sm">
+                    <p className="block text-gray-700 hover:bg-blue-50 text-sm py-2 hover:rounded-md">
                       {user.username}
                     </p>
                   </div>

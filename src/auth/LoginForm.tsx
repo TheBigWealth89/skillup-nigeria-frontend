@@ -4,23 +4,12 @@ import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
 import { Eye, EyeOff } from "lucide-react";
-import {Link, useNavigate} from "react-router-dom";
-import { Link } from "react-router-dom";
-
-interface LoginFormData {
-  identifier: string;
-  password: string;
-  rememberMe: boolean;
-}
+import { Link, useNavigate } from "react-router-dom";
 
 interface LoginFormProps {
   formData: any;
   handleInputChange: (field: string, value: string) => void;
-  formData: LoginFormData;
-  handleInputChange: (
-    field: keyof LoginFormData,
-    value: string | boolean
-  ) => void;
+
   handleSubmit: (e: React.FormEvent) => void;
   showPassword: boolean;
   setShowPassword: (show: boolean) => void;
@@ -94,7 +83,6 @@ const LoginForm: React.FC<LoginFormProps> = ({
             onChange={(e) =>
               handleInputChange("rememberMe", e.target.checked as any)
             }
-            onChange={(e) => handleInputChange("rememberMe", e.target.checked)}
             className="mr-2"
           />
           Remember me
@@ -104,16 +92,18 @@ const LoginForm: React.FC<LoginFormProps> = ({
           className="text-sm text-blue-600 hover:text-blue-700 font-medium"
           whileHover={{ scale: 1.05 }}
         >
-          <Link to="/reset-password" className="text-blue-600 hover:text-blue-700">
+          <Link
+            to="/reset-password"
+            className="text-blue-600 hover:text-blue-700"
+          >
             Forgot Password?
           </Link>
-          <Link to="/reset-password">Forgot Password?</Link>
         </motion.button>
       </motion.div>
       <motion.div whileHover={{ scale: 1.02 }} whileTap={{ scale: 0.98 }}>
         <Button
           type="submit"
-          className="w-full bg-gradient-to-r from-blue-600 to-green-600 hover:from-blue-700 hover:to-green-700 py-3 text-lg font-semibold"
+          className="w-full bg-primary py-3 text-lg font-semibold"
         >
           {isLoading ? "Signing In..." : "Sign In"}
         </Button>

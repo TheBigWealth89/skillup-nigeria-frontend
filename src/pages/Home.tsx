@@ -45,7 +45,7 @@ function Home() {
         </div>
       </section>
 
-      <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6 px-12 mb-16">
+      <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6 px-6 md:px-12  mb-16">
         {courses.map((course) => (
           <CourseCard
             key={course.id}
