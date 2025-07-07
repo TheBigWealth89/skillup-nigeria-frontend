@@ -250,7 +250,7 @@ const Navbar: React.FC = () => {
                       </Link>
 
                       <Link
-                        to="/courses"
+                        to="/"
                         className="block px-2 py-2 text-gray-700 dark:text-gray-200 hover:bg-blue-50 dark:hover:bg-gray-800 text-sm"
                       >
                         Courses
@@ -501,7 +501,7 @@ const Navbar: React.FC = () => {
                   </Link>
 
                   <Link
-                    to="/courses"
+                    to="/"
                     className="block px-4 py-2 text-gray-700 hover:bg-blue-50 text-sm"
                   >
                     Courses

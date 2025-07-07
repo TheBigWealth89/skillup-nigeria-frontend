@@ -11,6 +11,7 @@ import {
 import { useToast } from "@/hooks/use-toast";
 import { Clock, Users, Star, BookOpen, Play } from "lucide-react";
 import { useState } from "react";
+import { useEffect } from "react";
 import { useNavigate } from "react-router-dom";
 
 interface CourseCardProps {
@@ -22,8 +23,15 @@ export function CourseCard({ course, onViewDetails }: CourseCardProps) {
   const { toast } = useToast();
   const navigate = useNavigate();
   const [isEnrolling, setIsEnrolling] = useState(false);
+  const [isLoggedIn, setIsLoggedIn] = useState(false);
   const isEnrolled = isUserEnrolled(course.id);
   const progress = getUserEnrollmentProgress(course.id);
+
+  useEffect(() => {
+    // Check if user is logged in (simple check: token in localStorage)
+    const token = localStorage.getItem("token");
+    setIsLoggedIn(!!token);
+  }, []);
 
   const handleEnroll = async (e: React.MouseEvent) => {
     e.stopPropagation();
@@ -147,7 +155,20 @@ export function CourseCard({ course, onViewDetails }: CourseCardProps) {
         <Button
           className="flex-1"
           onClick={
-            isEnrolled ? () => navigate("/course/course2/learn") : handleEnroll
+            isEnrolled
+              ? () => {
+                  if (!isLoggedIn) {
+                    toast({
+                      title: "Login Required",
+                      description: "Please login to continue your course.",
+                      variant: "destructive",
+                    });
+                    navigate("/auth");
+                  } else {
+                    navigate("/course/course2/learn");
+                  }
+                }
+              : handleEnroll
           }
           disabled={isEnrolling || (isEnrolled && false)}
         >

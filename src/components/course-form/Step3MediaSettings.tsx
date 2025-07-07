@@ -25,7 +25,7 @@ const Step3MediaSettings: React.FC<Props> = ({ form, setForm, errors }) => {
     const widget = (window as any).cloudinary.createUploadWidget(
       {
         cloudName: "dxwea1hku", // Replace with your cloud name
-        uploadPreset: "skillup", // Replace with your preset
+        uploadPreset: "skillup", 
         multiple: false,
         sources: ["local", "url", "camera"],
         cropping: true, // Enable cropping for consistent aspect ratio

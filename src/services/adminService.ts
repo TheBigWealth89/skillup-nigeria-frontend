@@ -12,7 +12,20 @@ class adminService {
 
   async suspendUser(targetedUserId: string) {
     try {
-      const response = await apiClient.patch(`/admin/suspend/${targetedUserId}`);
+      const response = await apiClient.patch(
+        `/admin/suspend/${targetedUserId}`
+      );
+      return response.data;
+    } catch (error) {
+      throw error.response?.data || error.message;
+    }
+  }
+
+  async activateUser(targetedUserId: string) {
+    try {
+      const response = await apiClient.patch(
+        `/admin/activate/${targetedUserId}`
+      );
       return response.data;
     } catch (error) {
       throw error.response?.data || error.message;

@@ -111,6 +111,35 @@ const UserManagement: React.FC = () => {
     }
   };
 
+  const handleActivateUser = async (targetedUserId: string) => {
+    try {
+      const response = await adminService.activateUser(targetedUserId);
+      setUsers(
+        users.map((user) =>
+          user.id === targetedUserId
+            ? {
+                ...user,
+                status: response.newStatus,
+                isActive: response.newStatus === "active",
+              }
+            : user
+        )
+      );
+      toast({
+        title: response.message || "User Activated",
+        description: `User has been ${response.newStatus}`,
+        variant: "default",
+      });
+    } catch (err) {
+      toast({
+        title: "Error",
+        description:
+          err instanceof Error ? err.message : "Failed to activate user",
+        variant: "destructive",
+      });
+    }
+  };
+
   const handleExportUsers = () => {
     toast({
       title: "Export Started",
@@ -304,6 +333,16 @@ const UserManagement: React.FC = () => {
                           className="text-red-600 hover:text-red-700"
                         >
                           <UserX className="h-4 w-4" />
+                        </Button>
+                      )}
+                      {user.status === "suspended" && (
+                        <Button
+                          variant="outline"
+                          size="sm"
+                          onClick={() => handleActivateUser(user.id)}
+                          className="text-green-600 hover:text-green-700"
+                        >
+                          Activate
                         </Button>
                       )}
                     </div>
