@@ -1,6 +1,6 @@
 import axios from "axios";
 import apiClient from "./api";
-const API_URL = "https://skill-up-api.onrender.com/";
+const API_URL = "https://skill-up-api.onrender.com";
 
 const apiAuth = axios.create({
   baseURL: API_URL,
